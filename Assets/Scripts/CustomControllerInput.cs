@@ -63,7 +63,7 @@ public class CustomControllerInput : MonoBehaviour
     {
         if (triggerWeapon==currentWeapon)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButtonDown(0))        //플레이어 입장에서 발사
             {
                 WM.GetComponent<WeaponManagerVR>().Shoot();     //총발사
             }

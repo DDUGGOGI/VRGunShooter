@@ -19,20 +19,29 @@ public class WeaponManagerVR : MonoBehaviour
     public Transform weaponParent;
     public Transform muzzle;
     public Transform reloadcover;
-    public float shotReloadTime;
     public Vector3 shotReloadPosition;
     public Vector3 shotDefaultPosition;
-    public Transform[] muzzleFlash;
+    public float shotReloadTime;
+
+    public Transform reloadHammer;
+    public Vector3 HammeReloadRosition;
+    public Vector3 HammeDefaultRosition;
+    public float HammerReloadTime;
+
     public ParticleSystem particleSystem;
-    public ParticleSystem shotTargetParticleSystem;
-    
+    public ParticleSystem[] shotTargetParticleSystem;
+
     [Header("Custom Controller Input")]
-    public CustomControllerInput CCI;
+    public Transform CCI;
     public GameObject triggerOBJ;
 
     [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip[] audio;
+
+    [Header("Magazine")]
+    public Transform currentMagazine;
+
 
 
 
@@ -56,6 +65,8 @@ public class WeaponManagerVR : MonoBehaviour
     {
         
         PickEquipment(other);
+        gameObject.GetComponent<BoxCollider>().isTrigger = true;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     void InputCheck()
@@ -85,60 +96,155 @@ public class WeaponManagerVR : MonoBehaviour
     public void PickEquipment(Collider other)
     {
         
-        if (other.name == "GrabVolumeBigRight" && OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger))   //오큘러스용
+        if (other.name == "GrabVolumeBigRight" && OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))   // 1. 오른손 그립 아이템 집기
         {
+            gameObject.GetComponent<BoxCollider>().isTrigger = true;               // 총의 콜라이더 켜 충돌방지
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;        // 총의 물리 중지
+            
+
+            //PickEquipment(pickItemName);
+            triggerOBJ = other.gameObject;                                                 // 트리거 중인 게임 오브젝트 표시
+            gameObject.transform.parent = other.gameObject.transform;
+            gameObject.transform.position = other.gameObject.transform.position;
+            gameObject.transform.localRotation = other.gameObject.transform.localRotation;
+            other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;       // 손의 현재 무기를 최신화
+            CCI = other.transform;
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
+            {
+                audioSource.PlayOneShot(audio[2]);                                      // 픽업 사운드
+            }
+        }
+        else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))    // 2. 오른손 핸드 아이템 놓기
+        {
+            
+            gameObject.transform.parent = null;
+            //gameObject.transform.position = gameObject.transform.position;
+            //gameObject.transform.localRotation = gameObject.transform.localRotation;
+            other.GetComponent<CustomControllerInput>().currentWeapon = null;
+            CCI = null;
+            gameObject.GetComponent<BoxCollider>().isTrigger = false;      // 총의 콜라이더 꺼 물리실행
+            gameObject.GetComponent<Rigidbody>().isKinematic = false;
+        }
+        else if (other.name == "GrabVolumeBigLeft" && OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))   // 3. 왼손 그립 아이템 집기
+        {
+            gameObject.GetComponent<BoxCollider>().isTrigger = true;
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;
             //PickEquipment(pickItemName);
             triggerOBJ = other.gameObject;
-            gameObject.transform.parent = weaponParent.transform;
-            gameObject.transform.position = weaponParent.position;
-            gameObject.transform.localRotation = weaponParent.localRotation;
-            CCI.GetComponent<CustomControllerInput>().CurrentWeaponChange(Gun);
+            gameObject.transform.parent = other.gameObject.transform;
+            gameObject.transform.position = other.gameObject.transform.position;
+            gameObject.transform.localRotation = other.gameObject.transform.localRotation;
+            other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
+            CCI = other.transform;
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
+            {
+                audioSource.PlayOneShot(audio[2]);
+            }
+
         }
-        else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.One))
+        else if (other.name == "GrabVolumeBigLeft" && OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger))    // 4. 왼손 핸드 아이템 놓기
         {
+            
             gameObject.transform.parent = null;
-            gameObject.transform.position = gameObject.transform.position;
-            gameObject.transform.localRotation = gameObject.transform.localRotation;
-            CCI.GetComponent<CustomControllerInput>().CurrentWeaponChange(null);
+            //gameObject.transform.position = gameObject.transform.position;
+            //gameObject.transform.localRotation = gameObject.transform.localRotation;
+            other.GetComponent<CustomControllerInput>().currentWeapon = null;
+            CCI = null;
+            gameObject.GetComponent<BoxCollider>().isTrigger = false;
+            gameObject.GetComponent<Rigidbody>().isKinematic = false;
         }
 
-        if (other.name == "GrabVolumeBigRight" && Input.GetKeyDown(KeyCode.F))  //PC개발용  총 집는 기능
+
+
+
+
+
+        else if (other.name == "GrabVolumeBigRight" && Input.GetKeyDown(KeyCode.F))  // 5. PCPCPCPCPC 개발용  총 집는 기능
         {
             //PickEquipment(pickItemName);
             triggerOBJ = other.gameObject;
             gameObject.transform.parent = other.gameObject.transform;
             gameObject.transform.position = other.gameObject.transform.position;
             gameObject.transform.localRotation = other.gameObject.transform.localRotation;
-            CCI.GetComponent<CustomControllerInput>().CurrentWeaponChange(Gun);
-
+            other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
+            CCI = other.transform;
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
+            {
+                audioSource.PlayOneShot(audio[2]);
+            }
         }
-        else if (other.name == "GrabVolumeBigRight" && Input.GetKeyDown(KeyCode.G))     //총을 버리는 기능
+        else if (other.name == "GrabVolumeBigLeft" && Input.GetKeyDown(KeyCode.F))  // 6. PCPCPCPCPC 개발용  총 집는 기능
         {
-            gameObject.transform.parent = gameObject.transform;
-            gameObject.transform.position = gameObject.transform.position;
-            gameObject.transform.localRotation = gameObject.transform.localRotation;
-            CCI.GetComponent<CustomControllerInput>().CurrentWeaponChange(null);
+            //PickEquipment(pickItemName);
+            triggerOBJ = other.gameObject;
+            gameObject.transform.parent = other.gameObject.transform;
+            gameObject.transform.position = other.gameObject.transform.position;
+            gameObject.transform.localRotation = other.gameObject.transform.localRotation;
+            other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
+            CCI = other.transform;
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
+            {
+                audioSource.PlayOneShot(audio[2]);
+            }
+        }
+        else if (other.name == "GrabVolumeBigRight" && Input.GetKeyDown(KeyCode.G))     // 7. PCPCPC총 을 버리는 기능
+        {
+            gameObject.transform.parent = null;
+            //gameObject.transform.position = gameObject.transform.position;
+            //gameObject.transform.localRotation = gameObject.transform.localRotation;
+            other.GetComponent<CustomControllerInput>().currentWeapon = null;
+            CCI = null;
+        }
+        else if (other.name == "GrabVolumeBigLeft" && Input.GetKeyDown(KeyCode.F))  // 6. PCPCPCPCPC 개발용  총 집는 기능
+        {
+            //PickEquipment(pickItemName);
+            triggerOBJ = other.gameObject;
+            gameObject.transform.parent = other.gameObject.transform;
+            gameObject.transform.position = other.gameObject.transform.position;
+            gameObject.transform.localRotation = other.gameObject.transform.localRotation;
+            other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
+            CCI = other.transform;
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
+            {
+                audioSource.PlayOneShot(audio[2]);
+            }
         }
 
     }
 
     public void Shoot()     //총을 쏘면 실행시키는 함수
     {
-        //reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime).SetLoops(-1, LoopType.Yoyo);
-        reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime);
-        reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
+        if (CCI.GetComponent<CustomControllerInput>().currentWeapon==gameObject.transform)
+        {
+            //OVRInput.SetControllerVibration(0.00005f, 0.05f, OVRInput.Controller.RTouch);        //오큘러스 진동
 
-        
-        RayCreate();
+            reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime);      // 발사시 커버 움직임
+            reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
 
-        MuzzleFlash();
-        shotTargetParticleSystem.transform.position = hit.point;
-        shotTargetParticleSystem.transform.forward = hit.normal;
-        shotTargetParticleSystem.Play();
-        audioSource.PlayOneShot(audio[0]);
+            reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);        // 헤머 움직임
+            reloadHammer.transform.DOLocalRotate(HammeDefaultRosition, HammerReloadTime);
 
+            RayCreate();        // 레이발사
 
+            MuzzleFlash();      //머즐 섬광
+
+            for (int i = 0; i < shotTargetParticleSystem.Length; i++)
+            {
+                shotTargetParticleSystem[i].transform.position = hit.point;
+                shotTargetParticleSystem[i].transform.forward = hit.normal;
+                shotTargetParticleSystem[i].Play();
+            }
+
+            audioSource.PlayOneShot(audio[0]);
+
+            if (hit.transform.gameObject.name== "SphereTarget")
+            {
+                hit.transform.gameObject.GetComponent<HItBall>().Hitball();
+            }
+        }
     }
+
+   
 
     public void MuzzleFlash()
     {
@@ -168,17 +274,4 @@ public class WeaponManagerVR : MonoBehaviour
 
     }
 
-    private void PickEquipment(string EquipmentName)
-    {
-        if(EquipmentName == gameObject.name)
-        {
-            if(CCI.currentWeapon==null)
-            {
-                CCI.currentWeapon = Gun;
-                gameObject.transform.parent = weaponParent;
-                gameObject.transform.position = weaponParent.position;
-                gameObject.transform.rotation = weaponParent.rotation;
-            }
-        }
-    }
 }

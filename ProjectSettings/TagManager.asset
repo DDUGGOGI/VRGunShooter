@@ -11,6 +11,7 @@ TagManager:
   - Light
   - LeftHand
   - RightHane
+  - EquipPoint
   layers:
   - Default
   - TransparentFX

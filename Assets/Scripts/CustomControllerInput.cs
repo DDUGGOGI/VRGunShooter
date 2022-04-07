@@ -8,7 +8,7 @@ public class CustomControllerInput : MonoBehaviour
     public bool isLeftHandGrab = false;
     public bool isRightTrigger = false;
     public bool isLefttTrigger = false;
-    public WeaponManagerVR WM;
+    public Transform WM;
 
     public Transform currentWeapon;
     public Transform triggerWeapon;
@@ -55,18 +55,33 @@ public class CustomControllerInput : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         triggerWeapon = other.gameObject.transform;
-        WM=other.gameObject.GetComponent<WeaponManagerVR>();
+        //WM=other.gameObject.GetComponent<WeaponManagerVR>();
+        WM = other.gameObject.transform;
         //WM.PickEquipment(other);
+        if (other.transform.gameObject.GetComponent<InteractObJ>() != null)
+        {
+            print("사물의 인터렉 클래스 작동!");
+            other.transform.gameObject.GetComponent<InteractObJ>().OnConnect();
+        }
     }
 
     void WeaponCheck()
     {
         if (triggerWeapon==currentWeapon)
         {
-            if (Input.GetMouseButtonDown(0))        //플레이어 입장에서 발사
+            if (Input.GetMouseButtonDown(0) || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))        //플레이어 입장에서 발사
             {
                 WM.GetComponent<WeaponManagerVR>().Shoot();     //총발사
             }
+            
+            else if(OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))
+             {
+                return;
+            }
+        }
+        else
+        {
+            WM = null;
         }
     }
     

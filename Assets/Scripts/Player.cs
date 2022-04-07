@@ -125,12 +125,13 @@ public class Player : MonoBehaviourPunCallbacks
         
 
         //myRigid.velocity = vecMove * walkSpeed * Time.deltaTime;
-
+        /*
         if(Input.GetMouseButton(0))
         {
             Vector3 PhoneRVec = (moveH + movePhoneV).normalized * applySpeed * Time.deltaTime;
             myRigid.MovePosition(transform.position + PhoneRVec);
         }
+        */
     }
 
     void Jump()

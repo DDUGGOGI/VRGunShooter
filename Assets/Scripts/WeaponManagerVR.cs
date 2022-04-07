@@ -5,34 +5,51 @@ using DG.Tweening;
 
 public class WeaponManagerVR : MonoBehaviour
 {
+    [Header("RAY")]
+    RaycastHit hit;
 
-    public Transform weaponParent;
-
-    public Transform Gun;
-    public Transform reloadcover;
-    public Vector3 shotReloadMove;
-    public float shotReloadTime;
-
-    public bool isRightHandGrab=false;
+    [Header("Controller Check")]
+    public bool isRightHandGrab = false;
     public bool isLeftHandGrab = false;
     public bool isRightTrigger = false;
     public bool isLefttTrigger = false;
 
+    [Header("Gun Shot")]
+    public Transform Gun;
+    public Transform weaponParent;
+    public Transform muzzle;
+    public Transform reloadcover;
+    public float shotReloadTime;
+    public Vector3 shotReloadPosition;
+    public Vector3 shotDefaultPosition;
+    public Transform[] muzzleFlash;
+    public ParticleSystem particleSystem;
+    public ParticleSystem shotTargetParticleSystem;
+    
+    [Header("Custom Controller Input")]
     public CustomControllerInput CCI;
     public GameObject triggerOBJ;
+
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip[] audio;
+
+
+
+
+
 
 
 
     void Start()
     {
-        CCI = GetComponent<CustomControllerInput>();
         Gun = gameObject.transform;
     }
 
 
     void Update()
     {
-        RightHandGrab();
+        InputCheck();
     }
 
     private void OnTriggerStay(Collider other)
@@ -41,7 +58,7 @@ public class WeaponManagerVR : MonoBehaviour
         PickEquipment(other);
     }
 
-    void RightHandGrab()
+    void InputCheck()
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))     //오른손 그립
         {
@@ -75,43 +92,80 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.transform.parent = weaponParent.transform;
             gameObject.transform.position = weaponParent.position;
             gameObject.transform.localRotation = weaponParent.localRotation;
-            //CCI.CurrentWeaponChange(Gun.name);
+            CCI.GetComponent<CustomControllerInput>().CurrentWeaponChange(Gun);
         }
         else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.One))
         {
             gameObject.transform.parent = null;
-            //gameObject.transform.position = gameObject.transform.position;
-            //gameObject.transform.localRotation = gameObject.transform.localRotation;
-            //CCI.CurrentWeaponChange(null);
+            gameObject.transform.position = gameObject.transform.position;
+            gameObject.transform.localRotation = gameObject.transform.localRotation;
+            CCI.GetComponent<CustomControllerInput>().CurrentWeaponChange(null);
         }
 
-        if (other.name == "GrabVolumeBigRight" && Input.GetKeyDown(KeyCode.F))  //PC개발용 
+        if (other.name == "GrabVolumeBigRight" && Input.GetKeyDown(KeyCode.F))  //PC개발용  총 집는 기능
         {
             //PickEquipment(pickItemName);
             triggerOBJ = other.gameObject;
             gameObject.transform.parent = other.gameObject.transform;
             gameObject.transform.position = other.gameObject.transform.position;
             gameObject.transform.localRotation = other.gameObject.transform.localRotation;
-            //CCI.CurrentWeaponChange(Gun.name);
+            CCI.GetComponent<CustomControllerInput>().CurrentWeaponChange(Gun);
 
-            if (Input.GetMouseButton(0))
-            {
-                Shoot();
-            }
         }
-        else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.One))
+        else if (other.name == "GrabVolumeBigRight" && Input.GetKeyDown(KeyCode.G))     //총을 버리는 기능
         {
-            gameObject.transform.parent = null;
-            //gameObject.transform.position = gameObject.transform.position;
-            //gameObject.transform.localRotation = gameObject.transform.localRotation;
-            //CCI.CurrentWeaponChange(null);
+            gameObject.transform.parent = gameObject.transform;
+            gameObject.transform.position = gameObject.transform.position;
+            gameObject.transform.localRotation = gameObject.transform.localRotation;
+            CCI.GetComponent<CustomControllerInput>().CurrentWeaponChange(null);
         }
 
     }
 
-    public void Shoot()
+    public void Shoot()     //총을 쏘면 실행시키는 함수
     {
-        reloadcover.transform.DOLocalMove(shotReloadMove, shotReloadTime).SetLoops(1, LoopType.Yoyo);
+        //reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime).SetLoops(-1, LoopType.Yoyo);
+        reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime);
+        reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
+
+        
+        RayCreate();
+
+        MuzzleFlash();
+        shotTargetParticleSystem.transform.position = hit.point;
+        shotTargetParticleSystem.transform.forward = hit.normal;
+        shotTargetParticleSystem.Play();
+        audioSource.PlayOneShot(audio[0]);
+
+
+    }
+
+    public void MuzzleFlash()
+    {
+        particleSystem.Play();
+    }
+
+    public void ActiveChange(GameObject obj)
+    {
+        obj.gameObject.SetActive(false);
+    }
+
+    void RayCreate()
+    {
+        Ray ray = new Ray();
+        ray.origin = muzzle.transform.position;
+        ray.direction = muzzle.transform.forward;
+        if (Physics.Raycast(ray.origin, ray.direction, out hit, 100))
+        {
+            print(hit.transform.gameObject.name + "이 총알에 맞았습니다.");
+            
+
+        }
+        else if (hit.transform == null)
+        {
+            print("총알에 맞은 사물이 멀거나 없습니다... ");
+        }
+
     }
 
     private void PickEquipment(string EquipmentName)
@@ -120,7 +174,7 @@ public class WeaponManagerVR : MonoBehaviour
         {
             if(CCI.currentWeapon==null)
             {
-                CCI.currentWeapon = Gun.name;
+                CCI.currentWeapon = Gun;
                 gameObject.transform.parent = weaponParent;
                 gameObject.transform.position = weaponParent.position;
                 gameObject.transform.rotation = weaponParent.rotation;

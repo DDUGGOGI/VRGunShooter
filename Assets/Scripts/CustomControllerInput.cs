@@ -10,18 +10,21 @@ public class CustomControllerInput : MonoBehaviour
     public bool isLefttTrigger = false;
     public WeaponManagerVR WM;
 
-    public string currentWeapon;
-    public GameObject triggerWeapon;
+    public Transform currentWeapon;
+    public Transform triggerWeapon;
+    public Transform hand;
 
     void Start()
     {
-        WM = GetComponent<WeaponManagerVR>();
+        
+        currentWeapon = hand;
     }
     
 
     void Update()
     {
         RightHandGrab();
+        WeaponCheck();
     }
 
     void RightHandGrab()
@@ -44,16 +47,28 @@ public class CustomControllerInput : MonoBehaviour
         }
     }
 
-    public void CurrentWeaponChange(string name)
+    public void CurrentWeaponChange(Transform name)
     {
         currentWeapon = name;
     }
-    /*
+    
     private void OnTriggerStay(Collider other)
     {
-        triggerWeapon = other.gameObject;
-        WM.PickEquipment(other);
+        triggerWeapon = other.gameObject.transform;
+        WM=other.gameObject.GetComponent<WeaponManagerVR>();
+        //WM.PickEquipment(other);
     }
-    */
+
+    void WeaponCheck()
+    {
+        if (triggerWeapon==currentWeapon)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                WM.GetComponent<WeaponManagerVR>().Shoot();     //รัน฿ป็
+            }
+        }
+    }
+    
     
 }

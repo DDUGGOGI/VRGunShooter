@@ -432,11 +432,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7584778373616310582}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.058, y: 0.419, z: 0.942}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalPosition: {x: 0.05799997, y: -0.18200007, z: 0.4329999}
+  m_LocalScale: {x: 0.1, y: 0.09999999, z: 0.1}
   m_Children: []
-  m_Father: {fileID: 7706284793651129859}
-  m_RootOrder: 6
+  m_Father: {fileID: 7706284794092143187}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1738639440234264722
 MeshFilter:
@@ -517,8 +517,9 @@ MonoBehaviour:
   isRightTrigger: 0
   isLefttTrigger: 0
   WM: {fileID: 0}
-  currentWeapon: 
+  currentWeapon: {fileID: 0}
   triggerWeapon: {fileID: 0}
+  hand: {fileID: 0}
 --- !u!1 &7706284793334547589
 GameObject:
   m_ObjectHideFlags: 0
@@ -637,7 +638,6 @@ Transform:
   - {fileID: 8617613593479417272}
   - {fileID: 5689209043670056924}
   - {fileID: 4565065064272830102}
-  - {fileID: 4987331286527754784}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1226,7 +1226,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4987331286527754784}
   m_Father: {fileID: 7706284793690611686}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

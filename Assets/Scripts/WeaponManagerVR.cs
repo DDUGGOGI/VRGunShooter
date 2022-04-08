@@ -21,6 +21,7 @@ public class WeaponManagerVR : MonoBehaviour
     public Transform reloadcover;
     public Vector3 shotReloadPosition;
     public Vector3 shotDefaultPosition;
+    public Vector3 feedModePosition;
     public float shotReloadTime;
 
     public Transform reloadHammer;
@@ -59,6 +60,7 @@ public class WeaponManagerVR : MonoBehaviour
     void Update()
     {
         InputCheck();
+        GetAnotherButton();
     }
 
     private void OnTriggerStay(Collider other)
@@ -113,6 +115,8 @@ public class WeaponManagerVR : MonoBehaviour
             {
                 audioSource.PlayOneShot(audio[2]);                                      // 픽업 사운드
             }
+
+            
         }
         else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))    // 2. 오른손 핸드 아이템 놓기
         {
@@ -153,6 +157,9 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.GetComponent<BoxCollider>().isTrigger = false;
             gameObject.GetComponent<Rigidbody>().isKinematic = false;
         }
+        
+        
+
 
 
 
@@ -209,21 +216,43 @@ public class WeaponManagerVR : MonoBehaviour
                 audioSource.PlayOneShot(audio[2]);
             }
         }
-
     }
+
+    public void GetAnotherButton()
+    {
+        if (OVRInput.GetDown(OVRInput.Button.One))   // 5. 오른손 A 버튼 입력시
+        {
+            print("탄창 해제 !!");
+            currentMagazine.GetComponent<MagazineTop>().MagazineThrowaway();
+        }
+    }
+
 
     public void Shoot()     //총을 쏘면 실행시키는 함수
     {
-        // 총알 나가기전 검열
-        if (CCI.GetComponent<CustomControllerInput>().currentWeapon==gameObject.transform   && currentMagazine == gameObject.transform.GetChild(0).gameObject.transform.GetChild(2).gameObject.transform.GetChild(0) )
+        // 무기 일치 확인 & 매거진 장착 확인
+        if (CCI.GetComponent<CustomControllerInput>().currentWeapon==gameObject.transform && currentMagazine != null)
         {
-            //OVRInput.SetControllerVibration(0.00005f, 0.05f, OVRInput.Controller.RTouch);        //오큘러스 진동
+            
+
+            if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount <1)
+            {
+                
+                reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 총알 0일시 밥줘모드
+                audioSource.PlayOneShot(audio[2]);
+
+                return;
+            }
+            
 
             reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime);      // 발사시 커버 움직임
             reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
 
             reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);        // 헤머 움직임
             reloadHammer.transform.DOLocalRotate(HammeDefaultRosition, HammerReloadTime);
+
+            currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount -= 1;        // 발사시 매거진의 총알 감소
+            audioSource.PlayOneShot(audio[0]);                          // 발사 사운드
 
             RayCreate();        // 레이발사
 
@@ -235,25 +264,31 @@ public class WeaponManagerVR : MonoBehaviour
                 shotTargetParticleSystem[i].transform.forward = hit.normal;
                 shotTargetParticleSystem[i].Play();
             }
-
-            audioSource.PlayOneShot(audio[0]);
+            
 
             if (hit.transform.gameObject.name== "SphereTarget")
             {
                 hit.transform.gameObject.GetComponent<HItBall>().Hitball();
             }
+            
+
         }
 
         // 매거진 없고 & 총알 없을시 밥줘모드
-        else if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount ==0 || currentMagazine==null)      
+        else if (currentMagazine==null)      
         {
-            reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime);      // 발사시 커버 움직임
+            print("밥줘모드!!!");
+            reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 발사시 커버 움직임
+            audioSource.PlayOneShot(audio[2]);
         }
     }
 
-    public void GunSlideForward()       // 매거진에서 호출
+
+
+    public void GunSlideForward()       // 매거진에서 슬라이드 전진 호출
     {
         reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
+        audioSource.PlayOneShot(audio[2]);
     }
 
 

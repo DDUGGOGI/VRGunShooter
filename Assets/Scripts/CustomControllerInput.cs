@@ -71,7 +71,9 @@ public class CustomControllerInput : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))        //플레이어 입장에서 발사
             {
+                print("발사!!");
                 WM.GetComponent<WeaponManagerVR>().Shoot();     //총발사
+                
             }
             
             else if(OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))

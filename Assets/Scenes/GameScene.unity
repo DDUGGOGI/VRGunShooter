@@ -5009,11 +5009,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4634665788161919905, guid: 169858a915402cd4bb17018328228a3e, type: 3}
       propertyPath: scrollSpeed
-      value: 10
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4634665788194651730, guid: 169858a915402cd4bb17018328228a3e, type: 3}
       propertyPath: scrollSpeed
-      value: 10
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4634665788315966033, guid: 169858a915402cd4bb17018328228a3e, type: 3}
       propertyPath: lapMat.Array.data[2]
@@ -16295,6 +16295,7 @@ MonoBehaviour:
   reloadcover: {fileID: 0}
   shotReloadPosition: {x: 0, y: 0, z: 0}
   shotDefaultPosition: {x: 0, y: 0, z: 0}
+  feedModePosition: {x: 0, y: 0, z: 0}
   shotReloadTime: 0
   reloadHammer: {fileID: 0}
   HammeReloadRosition: {x: 0, y: 0, z: 0}
@@ -28442,13 +28443,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magazineTargetPosition: {x: 0, y: 0, z: 0}
+  WMVR: {fileID: 0}
   currentInGun: {fileID: 0}
   isMagazineAvailable: 0
-  magazineMaxCount: 10
-  magazineCurrentCount: 0
-  audioSource: {fileID: 0}
+  magazineMaxBulletCount: 10
+  magazineCurrentBulletCount: 0
+  audioSource: {fileID: 1816010193}
   audio:
   - {fileID: 8300000, guid: e10b9f2f05978074bbcff82aa075c8ed, type: 3}
+  DefaultPosition: {x: 0, y: 0, z: 0}
+  ThrowPosition: {x: -0.037, y: 0.5269, z: -1.5265}
+  ThrowTime: 1
 --- !u!82 &1816010193
 AudioSource:
   m_ObjectHideFlags: 0
@@ -29941,15 +29946,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3147264114008099040, guid: 76f6b9cec9a510148b0484980d897a7e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.024
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3147264114008099040, guid: 76f6b9cec9a510148b0484980d897a7e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.68382996
+      value: 0.654
       objectReference: {fileID: 0}
     - target: {fileID: 3147264114008099040, guid: 76f6b9cec9a510148b0484980d897a7e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.45627
+      value: -1.433
       objectReference: {fileID: 0}
     - target: {fileID: 3147264114008099040, guid: 76f6b9cec9a510148b0484980d897a7e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -30047,7 +30052,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3921377335806895201, guid: 97158ac8323c70d4580c62ad60af96df, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.793685e-10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4743631443959229778, guid: 97158ac8323c70d4580c62ad60af96df, type: 3}
       propertyPath: m_Name
@@ -30119,6 +30124,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7126087515903290330, guid: 97158ac8323c70d4580c62ad60af96df, type: 3}
       propertyPath: shotReloadMove.z
+      value: 1.793685e-10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7126087515903290330, guid: 97158ac8323c70d4580c62ad60af96df, type: 3}
+      propertyPath: feedModePosition.x
+      value: 0.000184
+      objectReference: {fileID: 0}
+    - target: {fileID: 7126087515903290330, guid: 97158ac8323c70d4580c62ad60af96df, type: 3}
+      propertyPath: feedModePosition.y
+      value: 0.001057178
+      objectReference: {fileID: 0}
+    - target: {fileID: 7126087515903290330, guid: 97158ac8323c70d4580c62ad60af96df, type: 3}
+      propertyPath: feedModePosition.z
       value: 1.793685e-10
       objectReference: {fileID: 0}
     - target: {fileID: 7126087515903290330, guid: 97158ac8323c70d4580c62ad60af96df, type: 3}

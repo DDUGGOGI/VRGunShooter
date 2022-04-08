@@ -214,7 +214,8 @@ public class WeaponManagerVR : MonoBehaviour
 
     public void Shoot()     //총을 쏘면 실행시키는 함수
     {
-        if (CCI.GetComponent<CustomControllerInput>().currentWeapon==gameObject.transform)
+        // 총알 나가기전 검열
+        if (CCI.GetComponent<CustomControllerInput>().currentWeapon==gameObject.transform   && currentMagazine == gameObject.transform.GetChild(0).gameObject.transform.GetChild(2).gameObject.transform.GetChild(0) )
         {
             //OVRInput.SetControllerVibration(0.00005f, 0.05f, OVRInput.Controller.RTouch);        //오큘러스 진동
 
@@ -228,7 +229,7 @@ public class WeaponManagerVR : MonoBehaviour
 
             MuzzleFlash();      //머즐 섬광
 
-            for (int i = 0; i < shotTargetParticleSystem.Length; i++)
+            for (int i = 0; i < shotTargetParticleSystem.Length; i++)       // 피격 섬광
             {
                 shotTargetParticleSystem[i].transform.position = hit.point;
                 shotTargetParticleSystem[i].transform.forward = hit.normal;
@@ -242,21 +243,28 @@ public class WeaponManagerVR : MonoBehaviour
                 hit.transform.gameObject.GetComponent<HItBall>().Hitball();
             }
         }
+
+        // 매거진 없고 & 총알 없을시 밥줘모드
+        else if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount ==0 || currentMagazine==null)      
+        {
+            reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime);      // 발사시 커버 움직임
+        }
     }
+
+    public void GunSlideForward()       // 매거진에서 호출
+    {
+        reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
+    }
+
 
    
 
-    public void MuzzleFlash()
+    public void MuzzleFlash()       //총구 섬광 함수!
     {
         particleSystem.Play();
     }
 
-    public void ActiveChange(GameObject obj)
-    {
-        obj.gameObject.SetActive(false);
-    }
-
-    void RayCreate()
+    void RayCreate()        //총의 레이케스트 발사!
     {
         Ray ray = new Ray();
         ray.origin = muzzle.transform.position;
@@ -264,8 +272,6 @@ public class WeaponManagerVR : MonoBehaviour
         if (Physics.Raycast(ray.origin, ray.direction, out hit, 100))
         {
             print(hit.transform.gameObject.name + "이 총알에 맞았습니다.");
-            
-
         }
         else if (hit.transform == null)
         {

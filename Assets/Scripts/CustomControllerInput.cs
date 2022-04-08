@@ -56,7 +56,7 @@ public class CustomControllerInput : MonoBehaviour
     {
         triggerWeapon = other.gameObject.transform;
         //WM=other.gameObject.GetComponent<WeaponManagerVR>();
-        WM = other.gameObject.transform;
+        WM = other.transform;
         //WM.PickEquipment(other);
         if (other.transform.gameObject.GetComponent<InteractObJ>() != null)
         {

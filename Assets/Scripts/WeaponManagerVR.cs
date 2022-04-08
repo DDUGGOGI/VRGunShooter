@@ -223,7 +223,8 @@ public class WeaponManagerVR : MonoBehaviour
         if (OVRInput.GetDown(OVRInput.Button.One))   // 5. 오른손 A 버튼 입력시
         {
             print("탄창 해제 !!");
-            currentMagazine.GetComponent<MagazineTop>().MagazineThrowaway();
+            currentMagazine.GetComponent<MagazineTop>().MagazineThrowaway();        
+            currentMagazine.GetComponent<MagazineTop>().MagazineColliderChange();       // 메거진 콜라이더 상호작용 못하도록 내려오는동안 정지
         }
     }
 
@@ -312,7 +313,6 @@ public class WeaponManagerVR : MonoBehaviour
         {
             print("총알에 맞은 사물이 멀거나 없습니다... ");
         }
-
     }
 
 }

@@ -14,6 +14,8 @@ public class CustomControllerInput : MonoBehaviour
     public Transform triggerWeapon;
     public Transform hand;
 
+    public Transform handAnchor;
+
     void Start()
     {
         

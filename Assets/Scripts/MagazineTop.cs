@@ -94,7 +94,7 @@ public class MagazineTop : MonoBehaviour
         }
     }
 
-    public void MagazineCurrentBulletAppear()
+    public void MagazineCurrentBulletAppear()       // 매거진 상단 총알 보이기
     {
         if (magazineCurrentBulletCount >0)
         {
@@ -110,7 +110,7 @@ public class MagazineTop : MonoBehaviour
         }
     }
 
-    public void ResetMagazine()
+    public void ResetMagazine()         // 매거진에 총알 채우기
     {
         print("리셋 메거진 함수 실행 !");
         if (magazineParent.GetComponent<WeaponManagerVR>().CCI != null && magazineParent.GetComponent<WeaponManagerVR>().triggerOBJ != null && magazineCurrentBulletCount<1)

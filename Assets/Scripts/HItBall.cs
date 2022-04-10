@@ -10,9 +10,17 @@ public class HItBall : MonoBehaviour
     float currentTime;
 
     bool isHit;
+
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip[] audio;
+
+
+
     void Start()
     {
         randomTime = Random.Range(minTime, maxTime);
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -29,6 +37,7 @@ public class HItBall : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().enabled = false;
         gameObject.GetComponent<SphereCollider>().enabled = false;
         randomTime = Random.Range(minTime, maxTime);
+        audioSource.PlayOneShot(audio[0]);
         
     }
 

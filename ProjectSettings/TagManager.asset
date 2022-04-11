@@ -12,6 +12,7 @@ TagManager:
   - LeftHand
   - RightHane
   - EquipPoint
+  - Floor
   layers:
   - Default
   - TransparentFX

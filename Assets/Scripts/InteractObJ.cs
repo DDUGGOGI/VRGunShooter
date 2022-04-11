@@ -20,6 +20,7 @@ public class InteractObJ : MonoBehaviour
 
     [Header("Rotation")]
     public bool RotationMechine;
+    public Vector3 startRotation;
     public Vector3 defaultRotation;
     public Vector3 targetRotation;
     public Ease ease;
@@ -38,7 +39,7 @@ public class InteractObJ : MonoBehaviour
     void Start()
     {
         //ani = GetComponent<Animation>();
-
+        transform.DOLocalRotate(startRotation, smoothTime).SetEase(ease);
     }
 
 

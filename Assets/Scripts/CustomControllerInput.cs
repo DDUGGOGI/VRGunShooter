@@ -60,7 +60,8 @@ public class CustomControllerInput : MonoBehaviour
         //WM=other.gameObject.GetComponent<WeaponManagerVR>();
         WM = other.transform;
         //WM.PickEquipment(other);
-        if (other.transform.gameObject.GetComponent<InteractObJ>() != null)
+
+        if (other.transform.gameObject.GetComponent<InteractObJ>() != null)     // 사물과의 상호작용 
         {
             print("사물의 인터렉 클래스 작동!");
             other.transform.gameObject.GetComponent<InteractObJ>().OnConnect();

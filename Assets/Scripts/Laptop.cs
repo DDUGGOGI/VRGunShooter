@@ -25,7 +25,7 @@ public class Laptop : MonoBehaviour
 
     void DisplayOff()
     {
-        if (interacobj.isOpen==false)
+        if (interacobj.isOpen==true)
         {
             //gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
             //laptopBody.gameObject.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = true;
@@ -35,7 +35,7 @@ public class Laptop : MonoBehaviour
             laptopBody.gameObject.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.white * 66f);
 
         }
-        else if (interacobj.isOpen == true)
+        else if (interacobj.isOpen == false)
         {
             //gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
             //laptopBody.gameObject.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = false;

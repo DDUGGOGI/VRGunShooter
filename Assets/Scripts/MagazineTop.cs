@@ -47,18 +47,22 @@ public class MagazineTop : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "magazineHole" && isMagazineAvailable==false)       // 총의 매거진 홀에 트리거 확인
+        // 총의 매거진 홀에 트리거 확인 + 불값 확인 + 매거진이 들려있는지 확인
+        if (other.name == "magazineHole" && isMagazineAvailable==false && OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))       
         {
             audioSource.PlayOneShot(audio[0]);                  // 클립 오디오 사운드
-            gameObject.transform.parent.gameObject.transform.SetParent(other.transform);        // 매거진의 부모 총의 매거진 홀로 지정
-            gameObject.transform.parent.gameObject.transform.localPosition = Vector3.zero;      // 매거진의 포지션 총으로 장착
+            gameObject.transform.parent.gameObject.transform.parent= other.transform;        // 매거진의 부모 총의 매거진 홀로 지정
+            gameObject.transform.parent.gameObject.transform.localPosition =new Vector3(0,0,0);      // 매거진의 포지션 총으로 장착
             gameObject.transform.parent.gameObject.transform.localRotation = Quaternion.Euler(0,0,180);     // 매거진이 총과 로테이션 일치
+            magazineParent.transform.localScale = new Vector3(0.008f, 0.008f, 0.008f);
             currentInGun = gameObject.transform.parent.gameObject.transform.parent.transform;                    // 매거진의 총 확인
 
 
             gameObject.GetComponent<BoxCollider>().enabled = false;                                             // 매거진 체크 트리거 작동 방지
             gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().enabled = false;     // 매거진 몸체 트리거 작동 방지
-            isMagazineAvailable = true;         // 매거진 사용 가능
+            magazineParent.transform.parent.gameObject.GetComponent<BoxCollider>().enabled = false;     //총의 매거진홀 콜라이더 방지
+            isMagazineAvailable = true;         // 매거진 장착 완료
+
             WMVR = other.transform.parent.gameObject.transform.parent.gameObject.transform;              // 총의 클래스 가져옴
             WMVR.GetComponent<WeaponManagerVR>().currentMagazine = gameObject.transform;        // 총에서 매거진 클래스 참조
             WMVR.GetComponent<WeaponManagerVR>().GunSlideForward();             // 밥줘모드 해제 함수
@@ -68,15 +72,20 @@ public class MagazineTop : MonoBehaviour
 
     public void MagazineThrowaway()     // 매거진 해제
     {
-        gameObject.transform.parent.gameObject.transform.DOLocalMove(ThrowPosition, ThrowTime);
+        magazineParent.transform.parent.gameObject.GetComponent<BoxCollider>().enabled = true;     //총의 매거진홀 콜라이더 사용가능
+        //gameObject.transform.parent.gameObject.transform.DOLocalMove(ThrowPosition, ThrowTime);
         WMVR.GetComponent<WeaponManagerVR>().currentMagazine = null;
-        isMagazineAvailable = false;                    // 사용가능 불값
-        gameObject.transform.parent.gameObject.transform.SetParent(null);        // 매거진의 부모 총의 매거진 홀로 지정
+        isMagazineAvailable = false;                    // 매거진 장착 가능
+        gameObject.transform.parent.gameObject.transform.SetParent(null);        // 매거진의 부모 해제
         currentInGun = null;                // 매거진의 총 확인
 
-        gameObject.GetComponent<BoxCollider>().enabled = true;                                             // 매거진 체크 트리거 작동 방지
-        gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().enabled = true;
+        gameObject.GetComponent<BoxCollider>().enabled = true;                                             // 건의 매거진 홀 감지 콜라이더 작동 가능
+        gameObject.transform.parent.gameObject.GetComponent<BoxCollider>().enabled = true;      //  매거진 잡기 가능
+        magazineParent.GetComponent<Rigidbody>().isKinematic = false;   //탄창의 트리거와 물리 작용 허용
+        magazineParent.GetComponent<BoxCollider>().isTrigger = false;
+
         WMVR = null;
+        magazineParent.transform.localScale = new Vector3(0.56f, 0.56f, 0.56f);
         
 
     }
@@ -113,7 +122,7 @@ public class MagazineTop : MonoBehaviour
     public void ResetMagazine()         // 매거진에 총알 채우기
     {
         print("리셋 메거진 함수 실행 !");
-        if (magazineParent.GetComponent<WeaponManagerVR>().CCI != null && magazineParent.GetComponent<WeaponManagerVR>().triggerOBJ != null && magazineCurrentBulletCount<1)
+        if (magazineParent.GetComponent<WeaponManagerVR>().CCI != null && magazineParent.GetComponent<WeaponManagerVR>().triggerOBJ != null && magazineCurrentBulletCount<magazineMaxBulletCount)
         {
             print("리셋 메거진 함수 실행! 메거진 손에 장착 확인 !");
 

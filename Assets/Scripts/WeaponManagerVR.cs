@@ -5,8 +5,18 @@ using DG.Tweening;
 
 public class WeaponManagerVR : MonoBehaviour
 {
+    [Header("Position")]
+    public Vector3 defaultPosition;
+    public Transform defaultParent;
+    public Transform[] meshParent;
+    public bool isUnlinitItem=false;
+
+    [Header("Scale")]
+    public Vector3 defaultScale;
+    public Vector3 firstScale;
+
     [Header("RAY")]
-    RaycastHit hit;
+    public RaycastHit hit;
 
     [Header("Controller Check")]
     public bool isRightHandGrab = false;
@@ -54,6 +64,13 @@ public class WeaponManagerVR : MonoBehaviour
     void Start()
     {
         Gun = gameObject.transform;
+
+        if (isUnlinitItem == true)      //UnlimitItem 경우 파지 상태
+        {
+            gameObject.GetComponent<BoxCollider>().isTrigger = true;               // 총의 콜라이더 켜 충돌방지
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;        // 총의 물리 중지
+        }
+
     }
 
 
@@ -67,8 +84,12 @@ public class WeaponManagerVR : MonoBehaviour
     {
         
         PickEquipment(other);
-        gameObject.GetComponent<BoxCollider>().isTrigger = true;
-        gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        //gameObject.GetComponent<BoxCollider>().isTrigger = true;
+        //gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        if (other.gameObject.tag=="Floor")
+        {
+            touchFloor();
+        }
     }
 
     void InputCheck()
@@ -100,6 +121,7 @@ public class WeaponManagerVR : MonoBehaviour
         
         if (other.name == "GrabVolumeBigRight" && OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))   // 1. 오른손 그립 아이템 집기
         {
+            
             gameObject.GetComponent<BoxCollider>().isTrigger = true;               // 총의 콜라이더 켜 충돌방지
             gameObject.GetComponent<Rigidbody>().isKinematic = true;        // 총의 물리 중지
             
@@ -111,6 +133,8 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.transform.localRotation = other.gameObject.transform.localRotation;
             other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;       // 손의 현재 무기를 최신화
             CCI = other.transform;
+            //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
+            //other.gameObject.transform.lossyScale = firstScale;
             if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
             {
                 audioSource.PlayOneShot(audio[2]);                                      // 픽업 사운드
@@ -120,7 +144,6 @@ public class WeaponManagerVR : MonoBehaviour
         }
         else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))    // 2. 오른손 핸드 아이템 놓기
         {
-            
             gameObject.transform.parent = null;
             //gameObject.transform.position = gameObject.transform.position;
             //gameObject.transform.localRotation = gameObject.transform.localRotation;
@@ -128,9 +151,11 @@ public class WeaponManagerVR : MonoBehaviour
             CCI = null;
             gameObject.GetComponent<BoxCollider>().isTrigger = false;      // 총의 콜라이더 꺼 물리실행
             gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
         }
         else if (other.name == "GrabVolumeBigLeft" && OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))   // 3. 왼손 그립 아이템 집기
         {
+            
             gameObject.GetComponent<BoxCollider>().isTrigger = true;
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
             //PickEquipment(pickItemName);
@@ -140,6 +165,7 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.transform.localRotation = other.gameObject.transform.localRotation;
             other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
             CCI = other.transform;
+            //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
             if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
             {
                 audioSource.PlayOneShot(audio[2]);
@@ -156,6 +182,7 @@ public class WeaponManagerVR : MonoBehaviour
             CCI = null;
             gameObject.GetComponent<BoxCollider>().isTrigger = false;
             gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
         }
         
         
@@ -249,8 +276,9 @@ public class WeaponManagerVR : MonoBehaviour
             reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime);      // 발사시 커버 움직임
             reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
 
-            reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);        // 헤머 움직임
-            reloadHammer.transform.DOLocalRotate(HammeDefaultRosition, HammerReloadTime);
+            reloadHammer.transform.DOLocalRotate(HammeDefaultRosition, HammerReloadTime);       // 해머가 공이 침
+            reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);        // 해머 준비 상태
+            
 
             currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount -= 1;        // 발사시 매거진의 총알 감소
             audioSource.PlayOneShot(audio[0]);                          // 발사 사운드
@@ -280,13 +308,14 @@ public class WeaponManagerVR : MonoBehaviour
         {
             print("밥줘모드!!!");
             reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 발사시 커버 움직임
+            reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);    // 해머가 뒤로 준비 상태
             audioSource.PlayOneShot(audio[2]);
         }
     }
 
 
 
-    public void GunSlideForward()       // 매거진에서 슬라이드 전진 호출
+    public void GunSlideForward()       // 매거진 들어가며 슬라이드 전진
     {
         reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
         audioSource.PlayOneShot(audio[2]);
@@ -313,6 +342,32 @@ public class WeaponManagerVR : MonoBehaviour
         {
             print("총알에 맞은 사물이 멀거나 없습니다... ");
         }
+
+        
+    }
+
+    void touchFloor()
+    {
+        if (isUnlinitItem == true)
+        {
+            print("바닦터치");
+
+            //meshParent[0].GetComponent<MeshRenderer>().enabled=false;
+            //meshParent[1].GetComponent<SkinnedMeshRenderer>().enabled = false;
+            gameObject.SetActive(false);
+
+
+            gameObject.transform.position = defaultPosition;
+            gameObject.transform.parent = defaultParent.transform;
+            Invoke("disapearSecond", 0.5f);
+        }
+    }
+
+    void disapearSecond()
+    {
+        //meshParent[0].GetComponent<MeshRenderer>().enabled = true;
+        //meshParent[1].GetComponent<SkinnedMeshRenderer>().enabled = true;
+        gameObject.SetActive(true);
     }
 
 }

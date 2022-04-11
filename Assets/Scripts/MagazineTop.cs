@@ -41,7 +41,7 @@ public class MagazineTop : MonoBehaviour
     void Update()
     {
         MagazineCurrentBulletAppear();
-        ResetMagazine();
+        //ResetMagazine();
         currentTime += Time.deltaTime;
     }
 
@@ -53,7 +53,7 @@ public class MagazineTop : MonoBehaviour
             audioSource.PlayOneShot(audio[0]);                  // 클립 오디오 사운드
             gameObject.transform.parent.gameObject.transform.parent= other.transform;        // 매거진의 부모 총의 매거진 홀로 지정
             gameObject.transform.parent.gameObject.transform.localPosition =new Vector3(0,0,0);      // 매거진의 포지션 총으로 장착
-            gameObject.transform.parent.gameObject.transform.localRotation = Quaternion.Euler(0,0,180);     // 매거진이 총과 로테이션 일치
+            gameObject.transform.parent.gameObject.transform.localRotation = Quaternion.Euler(0,0,0);     // 매거진이 총과 로테이션 일치
             magazineParent.transform.localScale = new Vector3(0.008f, 0.008f, 0.008f);
             currentInGun = gameObject.transform.parent.gameObject.transform.parent.transform;                    // 매거진의 총 확인
 

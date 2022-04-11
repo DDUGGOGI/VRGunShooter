@@ -7,6 +7,7 @@ public class WeaponManagerVR : MonoBehaviour
 {
     [Header("Position")]
     public Vector3 defaultPosition;
+    public Vector3 defaultRotation;
     public Transform defaultParent;
     public Transform[] meshParent;
     public bool isUnlinitItem=false;
@@ -162,7 +163,8 @@ public class WeaponManagerVR : MonoBehaviour
             triggerOBJ = other.gameObject;
             gameObject.transform.parent = other.gameObject.transform;
             gameObject.transform.position = other.gameObject.transform.position;
-            gameObject.transform.localRotation = other.gameObject.transform.localRotation;
+            gameObject.transform.localRotation = Quaternion.Euler(0, 0, 180f);  //  왼손 집으면 정자세
+            
             other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
             CCI = other.transform;
             //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
@@ -180,8 +182,8 @@ public class WeaponManagerVR : MonoBehaviour
             //gameObject.transform.localRotation = gameObject.transform.localRotation;
             other.GetComponent<CustomControllerInput>().currentWeapon = null;
             CCI = null;
-            gameObject.GetComponent<BoxCollider>().isTrigger = false;
-            gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            gameObject.GetComponent<BoxCollider>().isTrigger = false;           // 콜라이더 실행
+            gameObject.GetComponent<Rigidbody>().isKinematic = false;       // 물리 실행
             //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
         }
         
@@ -261,17 +263,19 @@ public class WeaponManagerVR : MonoBehaviour
         // 무기 일치 확인 & 매거진 장착 확인
         if (CCI.GetComponent<CustomControllerInput>().currentWeapon==gameObject.transform && currentMagazine != null)
         {
-            
 
-            if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount <1)
+           
+            if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount < 1)
             {
-                
+
                 reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 총알 0일시 밥줘모드
                 audioSource.PlayOneShot(audio[2]);
 
                 return;
             }
-            
+
+
+
 
             reloadcover.transform.DOLocalMove(shotReloadPosition, shotReloadTime);      // 발사시 커버 움직임
             reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
@@ -293,14 +297,20 @@ public class WeaponManagerVR : MonoBehaviour
                 shotTargetParticleSystem[i].transform.forward = hit.normal;
                 shotTargetParticleSystem[i].Play();
             }
-            
 
-            if (hit.transform.gameObject.name== "SphereTarget")
+            RayHit();       // 총알에 맞은 오브젝트와 인터렉트
+
+            if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount < 1)
             {
-                hit.transform.gameObject.GetComponent<HItBall>().Hitball();
-            }
-            
 
+                reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 총알 0일시 밥줘모드
+                audioSource.PlayOneShot(audio[2]);
+
+                return;
+            }
+
+
+            
         }
 
         // 매거진 없고 & 총알 없을시 밥줘모드
@@ -342,8 +352,14 @@ public class WeaponManagerVR : MonoBehaviour
         {
             print("총알에 맞은 사물이 멀거나 없습니다... ");
         }
+    }
 
-        
+    void RayHit()
+    {
+        if (hit.transform.gameObject.name == "SphereTarget")
+        {
+            hit.transform.gameObject.GetComponent<HItBall>().Hitball();
+        }
     }
 
     void touchFloor()
@@ -351,23 +367,30 @@ public class WeaponManagerVR : MonoBehaviour
         if (isUnlinitItem == true)
         {
             print("바닦터치");
+            gameObject.transform.GetChild(2).gameObject.GetComponent<MagazineTop>().magazineCurrentBulletCount =
+                gameObject.transform.GetChild(2).gameObject.GetComponent<MagazineTop>().magazineMaxBulletCount;
+            gameObject.GetComponent<BoxCollider>().isTrigger = true;           // 콜라이더 중지
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;       // 물리 중지
 
-            //meshParent[0].GetComponent<MeshRenderer>().enabled=false;
-            //meshParent[1].GetComponent<SkinnedMeshRenderer>().enabled = false;
-            gameObject.SetActive(false);
+            meshParent[0].GetComponent<MeshRenderer>().enabled=false;
+            meshParent[1].GetComponent<SkinnedMeshRenderer>().enabled = false;
+            //gameObject.SetActive(false);
+            Invoke("apearSecond", 0.5f);
 
-
-            gameObject.transform.position = defaultPosition;
             gameObject.transform.parent = defaultParent.transform;
-            Invoke("disapearSecond", 0.5f);
+            gameObject.transform.localPosition = defaultPosition;
+            gameObject.transform.localRotation = Quaternion.Euler(defaultRotation);
+
+
+
         }
     }
 
-    void disapearSecond()
+    void apearSecond()
     {
-        //meshParent[0].GetComponent<MeshRenderer>().enabled = true;
-        //meshParent[1].GetComponent<SkinnedMeshRenderer>().enabled = true;
-        gameObject.SetActive(true);
+        meshParent[0].GetComponent<MeshRenderer>().enabled = true;
+        meshParent[1].GetComponent<SkinnedMeshRenderer>().enabled = true;
+        //gameObject.SetActive(true);
     }
 
 }

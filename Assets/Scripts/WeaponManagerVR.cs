@@ -39,6 +39,10 @@ public class WeaponManagerVR : MonoBehaviour
     public Transform reloadHammer;
     public Vector3 HammeReloadRosition;
     public Vector3 HammeDefaultRosition;
+    public Vector3 gunReloadRosition;
+    public Vector3 gunDefaultRotation;
+
+
     public float HammerReloadTime;
 
     public ParticleSystem particleSystem;
@@ -300,6 +304,9 @@ public class WeaponManagerVR : MonoBehaviour
             }
 
             RayHit();       // 총알에 맞은 오브젝트와 인터렉트
+
+            weaponParent.transform.DOLocalRotate(gunReloadRosition, HammerReloadTime);       // 반동
+            weaponParent.transform.DOLocalRotate(gunDefaultRotation, HammerReloadTime);        
 
             if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount < 1)
             {

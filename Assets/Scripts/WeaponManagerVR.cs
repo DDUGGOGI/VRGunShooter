@@ -29,6 +29,7 @@ public class WeaponManagerVR : MonoBehaviour
     public Transform Gun;
     public Transform weaponParent;
     public Transform muzzle;
+    public Transform rayOrigin;
     public Transform reloadcover;
     public Vector3 shotReloadPosition;
     public Vector3 shotDefaultPosition;
@@ -342,8 +343,8 @@ public class WeaponManagerVR : MonoBehaviour
     void RayCreate()        //총의 레이케스트 발사!
     {
         Ray ray = new Ray();
-        ray.origin = muzzle.transform.position;
-        ray.direction = muzzle.transform.forward;
+        ray.origin = rayOrigin.transform.position;
+        ray.direction = rayOrigin.transform.forward;
         if (Physics.Raycast(ray.origin, ray.direction, out hit, 100))
         {
             print(hit.transform.gameObject.name + "이 총알에 맞았습니다.");

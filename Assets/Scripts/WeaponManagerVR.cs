@@ -39,9 +39,6 @@ public class WeaponManagerVR : MonoBehaviour
     public Transform reloadHammer;
     public Vector3 HammeReloadRosition;
     public Vector3 HammeDefaultRosition;
-    public Vector3 GunReloadRosition;
-    public Vector3 GunDefaultRosition;
-
     public float HammerReloadTime;
 
     public ParticleSystem particleSystem;
@@ -286,9 +283,7 @@ public class WeaponManagerVR : MonoBehaviour
 
             reloadHammer.transform.DOLocalRotate(HammeDefaultRosition, HammerReloadTime);       // 해머가 공이 침
             reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);        // 해머 준비 상태
-
             
-
 
             currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount -= 1;        // 발사시 매거진의 총알 감소
             audioSource.PlayOneShot(audio[0]);                          // 발사 사운드
@@ -303,8 +298,7 @@ public class WeaponManagerVR : MonoBehaviour
                 shotTargetParticleSystem[i].transform.forward = hit.normal;
                 shotTargetParticleSystem[i].Play();
             }
-            weaponParent.transform.DOLocalRotate(GunReloadRosition, HammerReloadTime);       // 해머가 공이 침
-            weaponParent.transform.DOLocalRotate(GunDefaultRosition, HammerReloadTime);        // 해머 준비 상태
+
             RayHit();       // 총알에 맞은 오브젝트와 인터렉트
 
             if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount < 1)

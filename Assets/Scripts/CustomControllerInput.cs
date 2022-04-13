@@ -13,6 +13,8 @@ public class CustomControllerInput : MonoBehaviour
     public Transform currentWeapon;
     public Transform triggerWeapon;
     public Transform hand;
+    public Transform rightHandMesh;
+    public Transform leftHandMesh;
 
     public Transform handAnchor;
 
@@ -27,6 +29,8 @@ public class CustomControllerInput : MonoBehaviour
     {
         RightHandGrab();
         WeaponCheck();
+        RighthandDisapearHandmesh();
+        LefthandDisapearHandmesh();
     }
 
     void RightHandGrab()
@@ -89,6 +93,34 @@ public class CustomControllerInput : MonoBehaviour
             WM = null;
         }
     }
-    
-    
+
+    void RighthandDisapearHandmesh()
+    {
+        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+        {
+            rightHandMesh.gameObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
+
+            
+        }
+        else if (OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))
+        {
+            rightHandMesh.gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+        }
+
+    }
+
+    void LefthandDisapearHandmesh()
+    {
+        if (OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))
+        {
+            leftHandMesh.gameObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
+        }
+        else if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger))
+        {
+            leftHandMesh.gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+        }
+
+    }
+
+
 }

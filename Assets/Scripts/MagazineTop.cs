@@ -54,7 +54,7 @@ public class MagazineTop : MonoBehaviour
             gameObject.transform.parent.gameObject.transform.parent= other.transform;        // 매거진의 부모 총의 매거진 홀로 지정
             gameObject.transform.parent.gameObject.transform.localPosition =new Vector3(0,0,0);      // 매거진의 포지션 총으로 장착
             gameObject.transform.parent.gameObject.transform.localRotation = Quaternion.Euler(0,0,0);     // 매거진이 총과 로테이션 일치
-            magazineParent.transform.localScale = new Vector3(0.008f, 0.008f, 0.008f);
+            
             currentInGun = gameObject.transform.parent.gameObject.transform.parent.transform;                    // 매거진의 총 확인
 
 
@@ -86,7 +86,6 @@ public class MagazineTop : MonoBehaviour
         magazineParent.GetComponent<BoxCollider>().isTrigger = false;
 
         WMVR = null;
-        magazineParent.transform.localScale = new Vector3(0.56f, 0.56f, 0.56f);
         
 
     }

@@ -2522,7 +2522,7 @@ GameObject:
   - component: {fileID: 1930239379502980589}
   - component: {fileID: 980960261250404474}
   m_Layer: 7
-  m_Name: OVRPlayerController 1
+  m_Name: OVRPlayerController 1 original
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -155,9 +155,6 @@ public class WeaponManagerVR : MonoBehaviour
         {
             gameObject.transform.parent = null;
 
-            gameObject.transform.localPosition = Vector3.zero;
-            gameObject.transform.localScale = Vector3.one;
-
             //gameObject.transform.position = gameObject.transform.position;
             //gameObject.transform.localRotation = gameObject.transform.localRotation;
             other.GetComponent<CustomControllerInput>().currentWeapon = null;

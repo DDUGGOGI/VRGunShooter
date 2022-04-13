@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class Laptop : MonoBehaviour
 {
+    public PhotonView PV;
+
     public InteractObJ interacobj;
 
     public GameObject laptopBody;
@@ -11,6 +14,7 @@ public class Laptop : MonoBehaviour
     public List<Material> lapMat;
 
     public Color32 white= new Color32(191, 191, 191, 255);
+
     
     void Start()
     {
@@ -20,9 +24,11 @@ public class Laptop : MonoBehaviour
 
     void Update()
     {
-        DisplayOff();
+        //DisplayOff();
+        PV.RPC("DisplayOff", RpcTarget.AllBuffered);
     }
 
+    [PunRPC]
     void DisplayOff()
     {
         if (interacobj.isOpen==true)

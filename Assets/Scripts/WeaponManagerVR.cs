@@ -35,6 +35,7 @@ public class WeaponManagerVR : MonoBehaviour
     public Vector3 shotDefaultPosition;
     public Vector3 feedModePosition;
     public float shotReloadTime;
+    public bool isFeedmode=false;
 
     public Transform reloadHammer;
     public Vector3 HammeReloadRosition;
@@ -135,22 +136,28 @@ public class WeaponManagerVR : MonoBehaviour
             //PickEquipment(pickItemName);
             triggerOBJ = other.gameObject;                                                 // 트리거 중인 게임 오브젝트 표시
             gameObject.transform.parent = other.gameObject.transform;
-            gameObject.transform.position = other.gameObject.transform.position;
+            //gameObject.transform.position = other.gameObject.transform.position;
+
+            gameObject.transform.localPosition = Vector3.zero;
+            gameObject.transform.localScale = Vector3.one;
+
             gameObject.transform.localRotation = other.gameObject.transform.localRotation;
             other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;       // 손의 현재 무기를 최신화
             CCI = other.transform;
             //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
             //other.gameObject.transform.lossyScale = firstScale;
-            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine" || gameObject.name == "Pistol9_magazineRight")
             {
                 audioSource.PlayOneShot(audio[2]);                                      // 픽업 사운드
             }
-
-            
         }
         else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))    // 2. 오른손 핸드 아이템 놓기
         {
             gameObject.transform.parent = null;
+
+            gameObject.transform.localPosition = Vector3.zero;
+            gameObject.transform.localScale = Vector3.one;
+
             //gameObject.transform.position = gameObject.transform.position;
             //gameObject.transform.localRotation = gameObject.transform.localRotation;
             other.GetComponent<CustomControllerInput>().currentWeapon = null;
@@ -158,6 +165,11 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.GetComponent<BoxCollider>().isTrigger = false;      // 총의 콜라이더 꺼 물리실행
             gameObject.GetComponent<Rigidbody>().isKinematic = false;
             //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
+
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
+            {
+                audioSource.PlayOneShot(audio[2]);
+            }
         }
         else if (other.name == "GrabVolumeBigLeft" && OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))   // 3. 왼손 그립 아이템 집기
         {
@@ -173,7 +185,7 @@ public class WeaponManagerVR : MonoBehaviour
             other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
             CCI = other.transform;
             //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
-            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine")
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
             {
                 audioSource.PlayOneShot(audio[2]);
             }
@@ -190,6 +202,10 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.GetComponent<BoxCollider>().isTrigger = false;           // 콜라이더 실행
             gameObject.GetComponent<Rigidbody>().isKinematic = false;       // 물리 실행
             //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
+            {
+                audioSource.PlayOneShot(audio[2]);
+            }
         }
         
         
@@ -256,6 +272,7 @@ public class WeaponManagerVR : MonoBehaviour
     {
         if (OVRInput.GetDown(OVRInput.Button.One))   // 5. 오른손 A 버튼 입력시
         {
+            audioSource.PlayOneShot(audio[5]);                  // 클립 오디오 사운드
             print("탄창 해제 !!");
             currentMagazine.GetComponent<MagazineTop>().MagazineThrowaway();        
             currentMagazine.GetComponent<MagazineTop>().MagazineColliderChange();       // 메거진 콜라이더 상호작용 못하도록 내려오는동안 정지
@@ -273,8 +290,18 @@ public class WeaponManagerVR : MonoBehaviour
             if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount < 1)
             {
 
-                reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 총알 0일시 밥줘모드
-                audioSource.PlayOneShot(audio[2]);
+                if (isFeedmode == false)
+                {
+                    print("밥줘모드!!!");
+                    reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 발사시 커버 움직임
+                    reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);    // 해머가 뒤로 준비 상태
+                    audioSource.PlayOneShot(audio[3]);
+                    isFeedmode = true;
+                }
+                else if (isFeedmode == true)
+                {
+                    audioSource.PlayOneShot(audio[2]);
+                }
 
                 return;
             }
@@ -305,15 +332,24 @@ public class WeaponManagerVR : MonoBehaviour
 
             RayHit();       // 총알에 맞은 오브젝트와 인터렉트
 
-            weaponParent.transform.DOLocalRotate(gunReloadRosition, HammerReloadTime);       // 반동
-            weaponParent.transform.DOLocalRotate(gunDefaultRotation, HammerReloadTime);        
+            CCI.DOLocalRotate(gunReloadRosition, HammerReloadTime);       // 반동
+            CCI.DOLocalRotate(gunDefaultRotation, HammerReloadTime);        
 
             if (currentMagazine.GetComponent<MagazineTop>().magazineCurrentBulletCount < 1)
             {
 
-                reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 총알 0일시 밥줘모드
-                audioSource.PlayOneShot(audio[2]);
-
+                if (isFeedmode == false)
+                {
+                    print("밥줘모드!!!");
+                    reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 발사시 커버 움직임
+                    reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);    // 해머가 뒤로 준비 상태
+                    audioSource.PlayOneShot(audio[3]);
+                    isFeedmode = true;
+                }
+                else if (isFeedmode == true)
+                {
+                    audioSource.PlayOneShot(audio[2]);
+                }
                 return;
             }
 
@@ -324,10 +360,18 @@ public class WeaponManagerVR : MonoBehaviour
         // 매거진 없고 & 총알 없을시 밥줘모드
         else if (currentMagazine==null)      
         {
-            print("밥줘모드!!!");
-            reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 발사시 커버 움직임
-            reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);    // 해머가 뒤로 준비 상태
-            audioSource.PlayOneShot(audio[2]);
+            if (isFeedmode == false)
+            {
+                print("밥줘모드!!!");
+                reloadcover.transform.DOLocalMove(feedModePosition, shotReloadTime);      // 발사시 커버 움직임
+                reloadHammer.transform.DOLocalRotate(HammeReloadRosition, HammerReloadTime);    // 해머가 뒤로 준비 상태
+                audioSource.PlayOneShot(audio[3]);
+                isFeedmode = true;
+            }
+            else if (isFeedmode ==true)
+            {
+                audioSource.PlayOneShot(audio[2]);
+            }
         }
     }
 
@@ -336,7 +380,8 @@ public class WeaponManagerVR : MonoBehaviour
     public void GunSlideForward()       // 매거진 들어가며 슬라이드 전진
     {
         reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
-        audioSource.PlayOneShot(audio[2]);
+        audioSource.PlayOneShot(audio[4]);
+        isFeedmode = false;
     }
 
 
@@ -380,7 +425,7 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.GetComponent<BoxCollider>().isTrigger = true;           // 콜라이더 중지
             gameObject.GetComponent<Rigidbody>().isKinematic = true;       // 물리 중지
 
-            meshParent[0].GetComponent<MeshRenderer>().enabled=false;
+            meshParent[0].gameObject.SetActive(false);
             meshParent[1].GetComponent<SkinnedMeshRenderer>().enabled = false;
             //gameObject.SetActive(false);
             Invoke("apearSecond", 0.5f);
@@ -390,13 +435,21 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.transform.localRotation = Quaternion.Euler(defaultRotation);
 
 
-
+            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1")
+            {
+                audioSource.PlayOneShot(audio[2]);
+            }
+            if (gameObject.name == "Pistol9_magazineRight")
+            {
+                audioSource.PlayOneShot(audio[4]);
+            }
         }
     }
 
     void apearSecond()
     {
-        meshParent[0].GetComponent<MeshRenderer>().enabled = true;
+        meshParent[0].gameObject.SetActive(true);
+        //meshParent[0].gameObject.GetComponent<MeshRenderer>().enabled = true;
         meshParent[1].GetComponent<SkinnedMeshRenderer>().enabled = true;
         //gameObject.SetActive(true);
     }

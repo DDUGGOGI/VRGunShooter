@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Photon.Pun;
 
 public class InteractObJ : MonoBehaviour
 {
+    public PhotonView PV;
+
     [Header("Control")]
     public bool isOpen = false;
     public bool isConnect = false;
@@ -48,12 +51,13 @@ public class InteractObJ : MonoBehaviour
         // ChangePositionCode();
         if (PositionMechine == true)
         {
-            ChangePositionLocal();
+            PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
+            //ChangePositionLocal();
         }
         else if (RotationMechine==true)
         {
-
-            ChangeRotationLocal();
+            PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
+            //ChangeRotationLocal();
         }
         
     }
@@ -109,6 +113,7 @@ public class InteractObJ : MonoBehaviour
         isConnect = false;
     }
 
+    [PunRPC]
     public void ChangePositionLocal()
     {
         if (isOpen == false && isConnect == true)
@@ -130,6 +135,7 @@ public class InteractObJ : MonoBehaviour
         }
     }
 
+    [PunRPC]
     public void ChangeRotationLocal()
     {
         if (isOpen == false && isConnect == true)

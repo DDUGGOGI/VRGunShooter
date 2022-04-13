@@ -50,7 +50,7 @@ public class MagazineTop : MonoBehaviour
         // 총의 매거진 홀에 트리거 확인 + 불값 확인 + 매거진이 들려있는지 확인
         if (other.name == "magazineHole" && isMagazineAvailable==false && OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))       
         {
-            audioSource.PlayOneShot(audio[0]);                  // 클립 오디오 사운드
+            //audioSource.PlayOneShot(audio[0]);                  // 클립 오디오 사운드
             gameObject.transform.parent.gameObject.transform.parent= other.transform;        // 매거진의 부모 총의 매거진 홀로 지정
             gameObject.transform.parent.gameObject.transform.localPosition =new Vector3(0,0,0);      // 매거진의 포지션 총으로 장착
             gameObject.transform.parent.gameObject.transform.localRotation = Quaternion.Euler(0,0,0);     // 매거진이 총과 로테이션 일치
@@ -72,6 +72,7 @@ public class MagazineTop : MonoBehaviour
 
     public void MagazineThrowaway()     // 매거진 해제
     {
+        //audioSource.PlayOneShot(audio[0]);                  // 클립 오디오 사운드
         magazineParent.transform.parent.gameObject.GetComponent<BoxCollider>().enabled = true;     //총의 매거진홀 콜라이더 사용가능
         //gameObject.transform.parent.gameObject.transform.DOLocalMove(ThrowPosition, ThrowTime);
         WMVR.GetComponent<WeaponManagerVR>().currentMagazine = null;

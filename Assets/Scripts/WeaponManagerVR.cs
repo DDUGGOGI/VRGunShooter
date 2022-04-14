@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class WeaponManagerVR : MonoBehaviour
+using Photon.Pun;
+
+public class WeaponManagerVR : MonoBehaviourPunCallbacks
 {
+    public PhotonView PV;
+
     [Header("Position")]
     public Vector3 defaultPosition;
     public Vector3 defaultRotation;
@@ -51,7 +55,7 @@ public class WeaponManagerVR : MonoBehaviour
 
     [Header("Custom Controller Input")]
     public Transform CCI;
-    public GameObject triggerOBJ;
+    public Transform triggerOBJ;
 
     [Header("Audio")]
     public AudioSource audioSource;
@@ -70,6 +74,8 @@ public class WeaponManagerVR : MonoBehaviour
 
     void Start()
     {
+
+        PV = GetComponent<PhotonView>();
         Gun = gameObject.transform;
 
         if (isUnlinitItem == true)      //UnlimitItem 경우 파지 상태
@@ -84,20 +90,27 @@ public class WeaponManagerVR : MonoBehaviour
     void Update()
     {
         InputCheck();
+
         GetAnotherButton();
+        //PV.RPC("GetAnotherButton", RpcTarget.AllBuffered);
     }
+
 
     private void OnTriggerStay(Collider other)
     {
         
         PickEquipment(other);
+        //PV.RPC("PickEquipment", RpcTarget.AllBuffered);
+
         //gameObject.GetComponent<BoxCollider>().isTrigger = true;
         //gameObject.GetComponent<Rigidbody>().isKinematic = true;
         if (other.gameObject.tag=="Floor")
         {
             touchFloor();
+            //PV.RPC("touchFloor", RpcTarget.AllBuffered);
         }
     }
+
 
     void InputCheck()
     {
@@ -122,20 +135,28 @@ public class WeaponManagerVR : MonoBehaviour
         isRightTrigger = false;
         isLefttTrigger = false;
 }
+    
+
 
     public void PickEquipment(Collider other)
     {
         
         if (other.name == "GrabVolumeBigRight" && OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))   // 1. 오른손 그립 아이템 집기
         {
-            
+            PV.RequestOwnership();
+            print("오너쉽 확인");
+
             gameObject.GetComponent<BoxCollider>().isTrigger = true;               // 총의 콜라이더 켜 충돌방지
             gameObject.GetComponent<Rigidbody>().isKinematic = true;        // 총의 물리 중지
             
 
             //PickEquipment(pickItemName);
-            triggerOBJ = other.gameObject;                                                 // 트리거 중인 게임 오브젝트 표시
+            triggerOBJ = other.gameObject.transform;                                                 // 트리거 중인 게임 오브젝트 표시
+            
+            print("셋페어런츠 이전");
+            //PV.RPC("RPCsetparent", RpcTarget.AllBuffered, gameObject.transform, other.gameObject.transform);
             gameObject.transform.parent = other.gameObject.transform;
+            print("셋페어런츠 이후");
             //gameObject.transform.position = other.gameObject.transform.position;
 
             gameObject.transform.localPosition = Vector3.zero;
@@ -146,10 +167,14 @@ public class WeaponManagerVR : MonoBehaviour
             CCI = other.transform;
             //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
             //other.gameObject.transform.lossyScale = firstScale;
+
+            
             if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine" || gameObject.name == "Pistol9_magazineRight")
             {
                 audioSource.PlayOneShot(audio[2]);                                      // 픽업 사운드
             }
+
+            
         }
         else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))    // 2. 오른손 핸드 아이템 놓기
         {
@@ -163,10 +188,12 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().isKinematic = false;
             //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
 
+            
             if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
             {
                 audioSource.PlayOneShot(audio[2]);
             }
+            
         }
         else if (other.name == "GrabVolumeBigLeft" && OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))   // 3. 왼손 그립 아이템 집기
         {
@@ -174,7 +201,7 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.GetComponent<BoxCollider>().isTrigger = true;
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
             //PickEquipment(pickItemName);
-            triggerOBJ = other.gameObject;
+            triggerOBJ = other.gameObject.transform;
             gameObject.transform.parent = other.gameObject.transform;
             gameObject.transform.position = other.gameObject.transform.position;
             gameObject.transform.localRotation = Quaternion.Euler(0, 0, 180f);  //  왼손 집으면 정자세
@@ -182,10 +209,13 @@ public class WeaponManagerVR : MonoBehaviour
             other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
             CCI = other.transform;
             //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
+
+            
             if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
             {
                 audioSource.PlayOneShot(audio[2]);
             }
+            
 
         }
         else if (other.name == "GrabVolumeBigLeft" && OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger))    // 4. 왼손 핸드 아이템 놓기
@@ -199,10 +229,13 @@ public class WeaponManagerVR : MonoBehaviour
             gameObject.GetComponent<BoxCollider>().isTrigger = false;           // 콜라이더 실행
             gameObject.GetComponent<Rigidbody>().isKinematic = false;       // 물리 실행
             //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
+
+            
             if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
             {
                 audioSource.PlayOneShot(audio[2]);
             }
+            
         }
         
         
@@ -212,7 +245,7 @@ public class WeaponManagerVR : MonoBehaviour
 
 
 
-
+        /*
         else if (other.name == "GrabVolumeBigRight" && Input.GetKeyDown(KeyCode.F))  // 5. PCPCPCPCPC 개발용  총 집는 기능
         {
             //PickEquipment(pickItemName);
@@ -263,7 +296,9 @@ public class WeaponManagerVR : MonoBehaviour
                 audioSource.PlayOneShot(audio[2]);
             }
         }
+        */
     }
+
 
     public void GetAnotherButton()
     {
@@ -297,7 +332,7 @@ public class WeaponManagerVR : MonoBehaviour
                 }
                 else if (isFeedmode == true)
                 {
-                    audioSource.PlayOneShot(audio[2]);
+                    //audioSource.PlayOneShot(audio[2]);
                 }
 
                 return;
@@ -318,14 +353,10 @@ public class WeaponManagerVR : MonoBehaviour
 
             RayCreate();        // 레이발사
 
-            MuzzleFlash();      //머즐 섬광
+            //MuzzleFlash();      //머즐 섬광
+            PV.RPC("MuzzleFlash", RpcTarget.AllBuffered);
 
-            for (int i = 0; i < shotTargetParticleSystem.Length; i++)       // 피격 섬광
-            {
-                shotTargetParticleSystem[i].transform.position = hit.point;
-                shotTargetParticleSystem[i].transform.forward = hit.normal;
-                shotTargetParticleSystem[i].Play();
-            }
+            
 
             RayHit();       // 총알에 맞은 오브젝트와 인터렉트
 
@@ -373,7 +404,7 @@ public class WeaponManagerVR : MonoBehaviour
     }
 
 
-
+    [PunRPC]
     public void GunSlideForward()       // 매거진 들어가며 슬라이드 전진
     {
         reloadcover.transform.DOLocalMove(shotDefaultPosition, shotReloadTime);
@@ -382,11 +413,18 @@ public class WeaponManagerVR : MonoBehaviour
     }
 
 
-   
 
+    [PunRPC]
     public void MuzzleFlash()       //총구 섬광 함수!
     {
         particleSystem.Play();
+
+        for (int i = 0; i < shotTargetParticleSystem.Length; i++)       // 피격 섬광
+        {
+            shotTargetParticleSystem[i].transform.position = hit.point;
+            shotTargetParticleSystem[i].transform.forward = hit.normal;
+            shotTargetParticleSystem[i].Play();
+        }
     }
 
     void RayCreate()        //총의 레이케스트 발사!
@@ -404,6 +442,7 @@ public class WeaponManagerVR : MonoBehaviour
         }
     }
 
+    [PunRPC]
     void RayHit()
     {
         if (hit.transform.gameObject.name == "SphereTarget")
@@ -411,6 +450,7 @@ public class WeaponManagerVR : MonoBehaviour
             hit.transform.gameObject.GetComponent<HItBall>().Hitball();
         }
     }
+
 
     void touchFloor()
     {
@@ -443,6 +483,7 @@ public class WeaponManagerVR : MonoBehaviour
         }
     }
 
+    [PunRPC]
     void apearSecond()
     {
         meshParent[0].gameObject.SetActive(true);

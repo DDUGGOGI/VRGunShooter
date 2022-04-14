@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using Photon.Pun;
 
-public class InteractObJ : MonoBehaviour
+public class InteractObJ : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
 

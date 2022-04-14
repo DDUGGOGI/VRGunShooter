@@ -64,6 +64,21 @@ MonoBehaviour:
   - ChangePositionLocal
   - ChangeRotationLocal
   - DisplayOff
+  - apearSecond
+  - GetAnotherButton
+  - GunSlideForward
+  - InputCheck
+  - MuzzleFlash
+  - PickEquipment
+  - RayCreate
+  - RayHit
+  - touchFloor
+  - CurrentWeaponChange
+  - LefthandDisapearHandmesh
+  - RighthandDisapearHandmesh
+  - RightHandGrab
+  - WeaponCheck
+  - RPCsetparent
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -1,3 +1,5 @@
+
+
 /************************************************************************************
 Copyright : Copyright (c) Facebook Technologies, LLC and its affiliates. All rights reserved.
 
@@ -10,16 +12,20 @@ ANY KIND, either express or implied. See the License for the specific language g
 permissions and limitations under the License.
 ************************************************************************************/
 
+
 #if USING_XR_MANAGEMENT && USING_XR_SDK_OCULUS
 #define USING_XR_SDK
 #endif
- 
+
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using Node = UnityEngine.XR.XRNode;
+using Photon;
+
 
 /// <summary>
 /// A head-tracked stereoscopic virtual reality camera rig.

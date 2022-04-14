@@ -10,6 +10,9 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
     public GameObject ovrCamRig;
+    public Camera cam;
+    public OVRCameraRig ovr;
+
     public Transform leftHand;
     public Transform rightHand;
     public Camera centerCam;
@@ -29,23 +32,29 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
     //점프 힘
     public float jumpPower = 2;
 
+    public Animator anim;
+
     void Start()
     {
+        anim = GetComponentInChildren<Animator>();
+
         pos = transform.position;
         if (PV.IsMine)
         {
             cc = GetComponent<CharacterController>();
-
+            ovrCamRig.SetActive(true);
+            cam.GetComponent<Camera>().enabled = true;
+            ovr.GetComponent<OVRCameraRig>().enabled = true;
         }
-        
+
     }
 
     void Update()
     {
         if (!PV.IsMine)
         {
+            ovrCamRig.SetActive(false);
             Destroy(ovrCamRig);
-
         }
         else
         {
@@ -64,7 +73,7 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
             leftHand.localPosition = InputTracking.GetLocalPosition(Node.LeftHand);
             rightHand.localPosition = InputTracking.GetLocalPosition(Node.RightHand);
 
-            PlayerArrowMove();
+            PlayerArrowMove();      // CC움직임 관리
             //youtubesMove();
 
             // 오른쪽 조이스틱 엄지스틱 회전 관리
@@ -76,6 +85,7 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
         }
     }
 
+    //Youtube움직임
     void youtubesMove()
     {
         // 왼쪽 조이스틱 엄지스틱 위치 관리
@@ -98,6 +108,9 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
         }
         transform.position = pos;
     }
+
+
+    // CC컨트롤러
     void PlayerArrowMove()
     {
         //사용자의 입력을 받는다.

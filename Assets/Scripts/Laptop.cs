@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class Laptop : MonoBehaviour
+public class Laptop : MonoBehaviourPunCallbacks
 {
     public PhotonView PV;
 

@@ -16,9 +16,7 @@ using UnityEngine;
 namespace Photon.Voice.Unity
 {
     /// <summary> Component representing remote audio stream in local scene. </summary>
-    #if !PHOTON_VOICE_FMOD_ENABLE
     [RequireComponent(typeof(AudioSource))]
-    #endif
     [AddComponentMenu("Photon Voice/Speaker")]
     [DisallowMultipleComponent]
     public class Speaker : VoiceComponent
@@ -81,11 +79,6 @@ namespace Photon.Voice.Unity
         /// Subsequently initialized Speakers will play their audio on the headphones that have been set with the first Speaker initialized.
         public int PlayStationUserID = 0;
 #endif
-
-        /// <summary>
-        /// A custom factory method to return <see cref="IAudioOut&lt;float&gt;"/> implementation used for the playback.
-        /// </summary>
-        public Func<IAudioOut<float>> CustomAudioOutFactory;
 
         #endregion
 
@@ -241,28 +234,6 @@ namespace Photon.Voice.Unity
             {
                 this.Logger.LogDebug("Initializing.");
             }
-            Func<IAudioOut<float>> factory;
-            if (this.CustomAudioOutFactory != null)
-            {
-                factory = this.CustomAudioOutFactory;
-            }
-            else
-            {
-                factory = this.GetDefaultAudioOutFactory();
-            }
-            #if !UNITY_EDITOR && (UNITY_PS4 || UNITY_SHARLIN)
-            this.audioOutput = new Photon.Voice.PlayStation.PlayStationAudioOut(this.PlayStationUserID, factory);
-            #else
-            this.audioOutput = factory();
-            #endif
-            if (this.Logger.IsDebugEnabled)
-            {
-                this.Logger.LogDebug("Initialized.");
-            }
-        }
-
-        internal Func<IAudioOut<float>> GetDefaultAudioOutFactory()
-        {
             #if USE_ONAUDIOFILTERREAD
             this.outBuffer = new AudioSyncBuffer<float>(this.playbackDelaySettings.MinDelaySoft, this.Logger, string.Empty, this.Logger.IsDebugEnabled);
             this.outputSampleRate = AudioSettings.outputSampleRate;
@@ -276,7 +247,16 @@ namespace Photon.Voice.Unity
             };
             Func<IAudioOut<float>> factory = () => new UnityAudioOut(this.GetComponent<AudioSource>(), pdc, this.Logger, string.Empty, this.Logger.IsDebugEnabled);
             #endif
-            return factory;
+
+            #if !UNITY_EDITOR && (UNITY_PS4 || UNITY_SHARLIN)
+            this.audioOutput = new Photon.Voice.PlayStation.PlayStationAudioOut(this.PlayStationUserID, factory);
+            #else
+            this.audioOutput = factory();
+            #endif
+            if (this.Logger.IsDebugEnabled)
+            {
+                this.Logger.LogDebug("Initialized.");
+            }
         }
 
         internal bool OnRemoteVoiceInfo(RemoteVoiceLink stream)

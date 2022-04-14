@@ -48,7 +48,7 @@ namespace Photon.Voice
 	{
         /// <summary>Set the callback function used for pushing data.</summary>
         /// <param name="callback">Callback function to use.</param>
-        /// <param name="bufferFactory">Buffer factory used to create the buffer that is pushed to the callback</param>
+        /// <param name="localVoice">Outgoing audio stream, for context.</param>
         void SetCallback(Action<T[]> callback, ObjectFactory<T[], int> bufferFactory);
 	}
 
@@ -86,14 +86,12 @@ namespace Photon.Voice
     /// <summary>Outgoing audio stream.</summary>
     abstract public class LocalVoiceAudio<T> : LocalVoiceFramed<T>, ILocalVoiceAudio
     {
-        /// <summary>Create a new LocalVoiceAudio{T} instance.</summary>
+        /// <summary>Create a new LocalVoiceAudio<T> instance.</summary>
         /// <param name="voiceClient">The VoiceClient to use for this outgoing stream.</param>
         /// <param name="voiceId">Numeric ID for this voice.</param>
         /// <param name="encoder">Encoder to use for this voice.</param>
-        /// <param name="voiceInfo">Outgoing stream parameters.</param>
-        /// <param name="audioSourceDesc">Audio source parameters.</param>
         /// <param name="channelId">Voice transport channel ID to use for this voice.</param>
-        /// <returns>The new LocalVoiceAudio{T} instance.</returns>
+        /// <returns>The new LocalVoiceAudio<T> instance.</returns>
         public static LocalVoiceAudio<T> Create(VoiceClient voiceClient, byte voiceId, IEncoder encoder, VoiceInfo voiceInfo, IAudioDesc audioSourceDesc, int channelId)
         {
             if (typeof(T) == typeof(float))
@@ -175,7 +173,7 @@ namespace Photon.Voice
         public static LocalVoiceAudioDummy Dummy = new LocalVoiceAudioDummy();
     }
 
-    /// <summary>Specialization of <see cref="LocalVoiceAudio{T}"></see> for float audio</summary>
+    /// <summary>Specialization of <see cref="LocalVoiceAudio"></see> for float audio</summary>
     public class LocalVoiceAudioFloat : LocalVoiceAudio<float>
     {
         internal LocalVoiceAudioFloat(VoiceClient voiceClient, IEncoder encoder, byte id, VoiceInfo voiceInfo, IAudioDesc audioSourceDesc, int channelId)
@@ -188,7 +186,7 @@ namespace Photon.Voice
         }
     }
 
-    /// <summary>Specialization of <see cref="LocalVoiceAudio{T}"></see> for short audio</summary>
+    /// <summary>Specialization of <see cref="LocalVoiceAudio"></see> for short audio</summary>
     public class LocalVoiceAudioShort : LocalVoiceAudio<short>
     {
         internal LocalVoiceAudioShort(VoiceClient voiceClient, IEncoder encoder, byte id, VoiceInfo voiceInfo, IAudioDesc audioSourceDesc, int channelId)

@@ -131,6 +131,9 @@ namespace Photon.Voice
 
         #region nonpublic
 
+        object sendLock = new object();
+
+        //
         public void SendVoicesInfo(IEnumerable<LocalVoice> voices, int channelId, int targetPlayerId)
         {
             foreach (var codecVoices in voices.GroupBy(v => v.Info.Codec))
@@ -152,8 +155,10 @@ namespace Photon.Voice
                 {
                     opt.TargetActors = new int[] { targetPlayerId };
                 }
-
-                this.OpRaiseEvent(VoiceEvent.Code, content, opt, sendOpt);
+                lock (sendLock)
+                {
+                    this.OpRaiseEvent(VoiceEvent.Code, content, opt, sendOpt);
+                }
             }
         }
 
@@ -180,8 +185,11 @@ namespace Photon.Voice
             {
                 opt.Receivers = ReceiverGroup.All;
             }
+            lock (sendLock)
+            {
 
-            this.OpRaiseEvent(VoiceEvent.Code, content, opt, sendOpt);
+                this.OpRaiseEvent(VoiceEvent.Code, content, opt, sendOpt);
+            }
         }
 
         public virtual void SendFrame(ArraySegment<byte> data, FrameFlags flags, byte evNumber, byte voiceId, int channelId, int targetPlayerId, bool reliable, LocalVoice localVoice)
@@ -209,9 +217,11 @@ namespace Photon.Voice
                 opt.Receivers = ReceiverGroup.All;
             }
             opt.InterestGroup = localVoice.InterestGroup;
-
-            this.OpRaiseEvent(VoiceEvent.Code, content, opt, sendOpt);
-            while (this.LoadBalancingPeer.SendOutgoingCommands());
+            lock (sendLock)
+            {
+                this.OpRaiseEvent(VoiceEvent.Code, content, opt, sendOpt);
+            }
+            this.LoadBalancingPeer.SendOutgoingCommands();
         }
 
         public string ChannelIdStr(int channelId) { return null; }
@@ -223,7 +233,7 @@ namespace Photon.Voice
             if (ev.Code == VoiceEvent.Code)
             {
                 // Payloads are arrays. If first array element is 0 than next is event subcode. Otherwise, the event is data frame with voiceId in 1st element.                    
-                protocol.onVoiceEvent(ev[(byte)ParameterCode.CustomEventContent], VOICE_CHANNEL, ev.Sender, ev.Sender == this.LocalPlayer.ActorNumber);
+                protocol.onVoiceEvent(ev[(byte)ParameterCode.CustomEventContent], VOICE_CHANNEL, ev.Sender, this.LocalPlayer.ActorNumber);
             }
             else
             {

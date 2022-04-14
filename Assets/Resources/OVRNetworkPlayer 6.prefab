@@ -1220,7 +1220,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7997137335942100096}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fffde3ecf9b7cbe4cb49ea3528cab064, type: 3}
   m_Name: 
@@ -2134,7 +2134,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7997137335942100118}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fffde3ecf9b7cbe4cb49ea3528cab064, type: 3}
   m_Name: 
@@ -2655,12 +2655,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grabBegin: 0.55
   grabEnd: 0.35
-  m_parentHeldObject: 0
+  m_parentHeldObject: 1
   m_moveHandPosition: 0
   m_gripTransform: {fileID: 7997137335942102171}
   m_grabVolumes:
   - {fileID: 7997137335942096272}
-  - {fileID: 0}
   m_controller: 2
   m_parentTransform: {fileID: 4590250434662594720}
   m_player: {fileID: 4590250434163701464}
@@ -3310,12 +3309,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grabBegin: 0.55
   grabEnd: 0.35
-  m_parentHeldObject: 0
+  m_parentHeldObject: 1
   m_moveHandPosition: 0
   m_gripTransform: {fileID: 7997137335942102385}
   m_grabVolumes:
   - {fileID: 7997137335942096282}
-  - {fileID: 0}
   m_controller: 1
   m_parentTransform: {fileID: 4590250434799181148}
   m_player: {fileID: 4590250434163701464}

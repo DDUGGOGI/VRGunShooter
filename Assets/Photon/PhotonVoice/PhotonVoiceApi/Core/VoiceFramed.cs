@@ -95,7 +95,7 @@ namespace Photon.Voice
     /// <summary>
     /// Typed re-framing LocalVoice
     /// </summary>
-    /// <remarks>Base class for typed re-framing LocalVoice implementation (<see cref="LocalVoiceFramed{T}"></see>) </remarks>
+    /// Base class for typed re-framing LocalVoice implementation (<see cref="LocalVoiceFramedBase<T>"></see>)
     public class LocalVoiceFramedBase : LocalVoice
     {
         /// <summary>Data flow will be repacked to frames of this size. May differ from input voiceInfo.FrameSize. Processors should resample in this case.</summary>
@@ -111,9 +111,11 @@ namespace Photon.Voice
     /// <summary>
     /// Typed re-framing LocalVoice
     /// </summary>
-    /// <remarks>
     /// Consumes data in array buffers of arbitrary length. Repacks them in frames of constant length for further processing and encoding.
-    /// </remarks>
+    /// <param name="voiceInfo">Outgoing stream parameters. Set applicable fields to read them by encoder and by receiving client when voice created.</param>
+    /// <param name="channelId">Transport channel specific to transport.</param>
+    /// <param name="encoder">Encoder producing the stream.</param>
+    /// <returns>Outgoing stream handler.</returns>
     public class LocalVoiceFramed<T> : LocalVoiceFramedBase
     {
         Framer<T> framer;
@@ -217,11 +219,6 @@ namespace Photon.Voice
         public void PushDataAsync(T[] buf)
         {
             if (disposed) return;
-
-#if PHOTON_VOICE_THREADING_DISABLE
-            PushData(buf);
-            return;
-#endif
 
             if (!dataEncodeThreadStarted)
             {
@@ -386,7 +383,7 @@ namespace Photon.Voice
         }
 
         /// <summary>
-        /// Releases resources used by the <see cref="LocalVoiceFramed{T}"/> instance. 
+        /// Releases resources used by the <see cref="VoiceFramed"/> instance. 
         /// Buffers used for asynchronous push will be disposed in encoder thread's 'finally'.
         /// </summary>
         public override void Dispose()

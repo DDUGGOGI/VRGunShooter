@@ -206,6 +206,8 @@ namespace Photon.Voice
         // only height and stride compared, other parameters do not affect native buffers and can be simple overwritten
         protected override bool infosMatch(ImageBufferInfo i0, ImageBufferInfo i1)
         {
+            if (i0 == null) return i1 == null;
+            if (i1 == null) return i0 == null;
             if (i0.Height != i1.Height)
             {
                 return false;

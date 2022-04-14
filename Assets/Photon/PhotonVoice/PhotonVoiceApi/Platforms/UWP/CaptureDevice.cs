@@ -76,10 +76,15 @@ namespace Photon.Voice.UWP
 
         public void Initialize()
         {
-            InitializeAsync();
+            var t = InitializeAsync();
+            t.Wait();
+            if (t.Exception != null)
+            {
+                throw t.Exception;
+            }
         }
 
-        public void InitializeAsync()
+        public async Task InitializeAsync()
         {
             try
             {

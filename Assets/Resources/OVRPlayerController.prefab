@@ -290,6 +290,7 @@ GameObject:
   - component: {fileID: 3309954883575068248}
   - component: {fileID: 3309954883575068249}
   - component: {fileID: 3309954883575068254}
+  - component: {fileID: 5101418640054050190}
   m_Layer: 7
   m_Name: CustomHandRight
   m_TagString: Untagged
@@ -342,7 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grabBegin: 0.55
   grabEnd: 0.35
-  m_parentHeldObject: 0
+  m_parentHeldObject: 1
   m_moveHandPosition: 0
   m_gripTransform: {fileID: 3309954883706381192}
   m_grabVolumes:
@@ -366,6 +367,19 @@ MonoBehaviour:
   m_controller: 2
   m_animator: {fileID: 3309954884776613557}
   m_defaultGrabPose: {fileID: 11437176, guid: 35525acb4c3b75c4a8c4dc2c117427be, type: 3}
+--- !u!135 &5101418640054050190
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3309954883575068252}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3309954883582010189
 GameObject:
   m_ObjectHideFlags: 0
@@ -1451,11 +1465,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3309954883936458028}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fffde3ecf9b7cbe4cb49ea3528cab064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PV: {fileID: 0}
   isRightHandGrab: 0
   isLeftHandGrab: 0
   isRightTrigger: 0
@@ -1464,6 +1479,9 @@ MonoBehaviour:
   currentWeapon: {fileID: 0}
   triggerWeapon: {fileID: 0}
   hand: {fileID: 3309954883936458030}
+  rightHandMesh: {fileID: 0}
+  leftHandMesh: {fileID: 0}
+  handAnchor: {fileID: 0}
 --- !u!1 &3309954883961971295
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,7 +2162,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3309954884240851728
 Transform:
   m_ObjectHideFlags: 0
@@ -2596,11 +2614,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3309954884259738627}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fffde3ecf9b7cbe4cb49ea3528cab064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PV: {fileID: 0}
   isRightHandGrab: 0
   isLeftHandGrab: 0
   isRightTrigger: 0
@@ -2609,6 +2628,9 @@ MonoBehaviour:
   currentWeapon: {fileID: 0}
   triggerWeapon: {fileID: 0}
   hand: {fileID: 3309954884259738626}
+  rightHandMesh: {fileID: 0}
+  leftHandMesh: {fileID: 0}
+  handAnchor: {fileID: 0}
 --- !u!1 &3309954884261899603
 GameObject:
   m_ObjectHideFlags: 0
@@ -3904,8 +3926,8 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.3
+  m_Height: 1.6
+  m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.01
@@ -6279,6 +6301,7 @@ GameObject:
   - component: {fileID: 3309954885454140561}
   - component: {fileID: 3309954885454140566}
   - component: {fileID: 3309954885454140567}
+  - component: {fileID: 1833479430749177539}
   m_Layer: 7
   m_Name: CustomHandLeft
   m_TagString: Untagged
@@ -6331,7 +6354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grabBegin: 0.55
   grabEnd: 0.35
-  m_parentHeldObject: 0
+  m_parentHeldObject: 1
   m_moveHandPosition: 0
   m_gripTransform: {fileID: 3309954885216468067}
   m_grabVolumes:
@@ -6355,6 +6378,19 @@ MonoBehaviour:
   m_controller: 1
   m_animator: {fileID: 3309954885176228740}
   m_defaultGrabPose: {fileID: 11437176, guid: 35525acb4c3b75c4a8c4dc2c117427be, type: 3}
+--- !u!135 &1833479430749177539
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3309954885454140565}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3309954885459106845
 GameObject:
   m_ObjectHideFlags: 0

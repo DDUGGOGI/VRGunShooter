@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: a80ff794-8521-4996-9b93-d1667f5b3537
+    AppIdRealtime: 7d4a459a-745b-48ce-bc68-eeb598031273
     AppIdFusion: 
     AppIdChat: 
     AppIdVoice: 
@@ -28,7 +28,7 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: asia
+  DevRegion: kr
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
@@ -36,49 +36,37 @@ MonoBehaviour:
   RpcList:
   - ClickRpc
   - DestroyRpc
-  - DestroyRPC
   - DestroySpaceship
-  - Equip
   - Fire
+  - RespawnSpaceship
+  - CantHearYou
+  - ChangeColour
+  - HeresWhy
+  - DisableGravity
+  - EnableGravity
+  - apearSecond
+  - ChangePositionLocal
+  - ChangeRotationLocal
+  - DestroyRPC
+  - DisplayOff
+  - Equip
   - GetAK
   - GetDamage
   - GetMAC10
   - GetVECTOR
+  - GunSlideForward
   - InstantiateCartrige
-  - InstantiateCartrige2
-  - OnTriggerStay
+  - KeyEquip
+  - MuzzleFlash
   - parent
-  - RespawnSpaceship
+  - PlayerArrowMove
+  - RayHit
+  - ReSpawn
   - SetActiveFalse
   - setoffGun
   - Shoot
   - test
   - ThrowItem
-  - KeyEquip
-  - PlayerDead
-  - ReSpawn
-  - CantHearYou
-  - ChangeColour
-  - HeresWhy
-  - PlayerArrowMove
-  - ChangePositionLocal
-  - ChangeRotationLocal
-  - DisplayOff
-  - apearSecond
-  - GetAnotherButton
-  - GunSlideForward
-  - InputCheck
-  - MuzzleFlash
-  - PickEquipment
-  - RayCreate
-  - RayHit
-  - touchFloor
-  - CurrentWeaponChange
-  - LefthandDisapearHandmesh
-  - RighthandDisapearHandmesh
-  - RightHandGrab
-  - WeaponCheck
-  - RPCsetparent
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

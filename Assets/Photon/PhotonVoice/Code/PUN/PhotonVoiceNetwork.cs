@@ -127,18 +127,18 @@ namespace Photon.Voice.PUN
             {
                 lock (instanceLock)
                 {
-                    if (ReferenceEquals(null, value) || !value)
+                    if (value == null)
                     {
                         if (instantiated)
                         {
                             if (instance.Logger.IsErrorEnabled)
                             {
-                                instance.Logger.LogError("Cannot set PhotonVoiceNetwork.Instance to null or destroyed.");
+                                instance.Logger.LogError("Cannot set PhotonVoiceNetwork.Instance to null.");
                             }
                         }
                         else
                         {
-                            Debug.LogError("Cannot set PhotonVoiceNetwork.Instance to null or destroyed.");
+                            Debug.LogError("Cannot set PhotonVoiceNetwork.Instance to null.");
                         }
                         return;
                     }
@@ -344,7 +344,7 @@ namespace Photon.Voice.PUN
 
             int photonViewId = (int)userData;
             PhotonView photonView = PhotonView.Find(photonViewId);
-            if (ReferenceEquals(null, photonView) || !photonView)
+            if (photonView == null)
             {
                 if (this.Logger.IsWarningEnabled)
                 {
@@ -354,7 +354,7 @@ namespace Photon.Voice.PUN
             }
 
             PhotonVoiceView photonVoiceView = photonView.GetComponent<PhotonVoiceView>();
-            if (ReferenceEquals(null, photonVoiceView) || !photonVoiceView)
+            if (photonVoiceView == null)
             {
                 if (this.Logger.IsWarningEnabled)
                 {
@@ -541,7 +541,7 @@ namespace Photon.Voice.PUN
 
         internal void CheckLateLinking(Speaker speaker, int viewId)
         {
-            if (ReferenceEquals(null, speaker) || !speaker)
+            if (!speaker || speaker == null)
             {
                 if (this.Logger.IsWarningEnabled)
                 {

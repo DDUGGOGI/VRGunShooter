@@ -24,8 +24,8 @@ public class Laptop : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        //DisplayOff();
-        PV.RPC("DisplayOff", RpcTarget.AllBuffered);
+        DisplayOff();
+        //PV.RPC("DisplayOff", RpcTarget.AllBuffered);
     }
 
     [PunRPC]

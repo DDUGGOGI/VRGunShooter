@@ -12,6 +12,7 @@ namespace Photon.Voice
     public static partial class AudioUtil
     {
         /// <summary>IAudioReader that provides a constant tone signal.</summary>
+        /// See also <see cref="MicWrapper"></see> and <see cref="AudioClipWrapper"></see>
         /// Because of current resampling algorithm, the tone is distorted if SamplingRate does not equal encoder sampling rate.
         public class ToneAudioReader<T> : IAudioReader<T>
         {
@@ -79,7 +80,7 @@ namespace Photon.Voice
                         var b = buf as short[];
                         for (int i = 0; i < bufSamples; i++)
                         {
-                            var v = (short)(System.Math.Sin(timeSamples++ * k) * (0.2f * short.MaxValue));
+                            var v = (short)(System.Math.Sin(timeSamples++ * k) * 0.2f);
                             for (int j = 0; j < Channels; j++)
                                 b[x++] = v;
                         }
@@ -116,7 +117,7 @@ namespace Photon.Voice
 
             /// <summary>Set the callback function used for pushing data</summary>
             /// <param name="callback">Callback function to use</param>
-            /// <param name="bufferFactory">Buffer factory used to create the buffer that is pushed to the callback</param>
+            /// <param name="localVoice">Outgoing audio stream, for context</param>
             public void SetCallback(Action<T[]> callback, ObjectFactory<T[], int> bufferFactory)
             {
                 if (timer != null)

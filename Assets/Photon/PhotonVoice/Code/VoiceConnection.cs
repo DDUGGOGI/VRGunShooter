@@ -230,21 +230,17 @@ namespace Photon.Voice.Unity
             {
                 if (value != this.speakerPrefab)
                 {
-                    if (!ReferenceEquals(null, value) && value)
+                    if (value != null && value.GetComponentInChildren<Speaker>() == null)
                     {
-                        Speaker speaker = value.GetComponentInChildren<Speaker>(true);
-                        if (ReferenceEquals(null, speaker) || !speaker)
+                        #if UNITY_EDITOR
+                        Debug.LogError("SpeakerPrefab must have a component of type Speaker in its hierarchy.", this);
+                        #else
+                        if (this.Logger.IsErrorEnabled)
                         {
-                            #if UNITY_EDITOR
-                            Debug.LogError("SpeakerPrefab must have a component of type Speaker in its hierarchy.", this);
-                            #else
-                            if (this.Logger.IsErrorEnabled)
-                            {
-                                this.Logger.LogError("SpeakerPrefab must have a component of type Speaker in its hierarchy.");
-                            }
-                            #endif
-                            return;
+                            this.Logger.LogError("SpeakerPrefab must have a component of type Speaker in its hierarchy.");
                         }
+                        #endif
+                        return;
                     }
                     this.speakerPrefab = value;
                 }
@@ -439,19 +435,11 @@ namespace Photon.Voice.Unity
         /// <param name="rec">The Recorder to be initialized.</param>
         public void InitRecorder(Recorder rec)
         {
-            if (ReferenceEquals(null, rec))
+            if (rec == null)
             {
                 if (this.Logger.IsErrorEnabled)
                 {
                     this.Logger.LogError("rec is null.");
-                }
-                return;
-            }
-            if (!rec)
-            {
-                if (this.Logger.IsErrorEnabled)
-                {
-                    this.Logger.LogError("rec is destroyed.");
                 }
                 return;
             }
@@ -504,7 +492,7 @@ namespace Photon.Voice.Unity
         /// <returns></returns>
         public virtual bool TryLateLinkingUsingUserData(Speaker speaker, object userData)
         {
-            if (ReferenceEquals(null, speaker) || !speaker)
+            if (!speaker || speaker == null)
             {
                 if (this.Logger.IsWarningEnabled)
                 {
@@ -675,8 +663,7 @@ namespace Photon.Voice.Unity
         protected virtual Speaker SimpleSpeakerFactory(int playerId, byte voiceId, object userData)
         {
             Speaker speaker = null;
-            bool speakerInstantiated = false;
-            if (!ReferenceEquals(null, this.SpeakerPrefab) && this.SpeakerPrefab)
+            if (this.SpeakerPrefab)
             {
                 GameObject go = Instantiate(this.SpeakerPrefab);
                 Speaker[] speakers = go.GetComponentsInChildren<Speaker>(true);
@@ -688,37 +675,27 @@ namespace Photon.Voice.Unity
                         this.Logger.LogWarning("Multiple Speaker components found attached to the GameObject (VoiceConnection.SpeakerPrefab) or its children. Using the first one we found.");
                     }
                 }
-                if (ReferenceEquals(null, speaker))
+                if (speaker == null)
                 {
                     if (this.Logger.IsErrorEnabled)
                     {
-                        this.Logger.LogError("Unexpected: SpeakerPrefab does not have a component of type Speaker in its hierarchy.");
+                        this.Logger.LogError("SpeakerPrefab does not have a component of type Speaker in its hierarchy.");
                     }
-                }
-                else
-                {
-                    speakerInstantiated = true;
-                }
-            }
-            if (!speakerInstantiated)
-            {
-                if (this.AutoCreateSpeakerIfNotFound)
-                {
-                    if (this.Logger.IsInfoEnabled)
-                    {
-                        this.Logger.LogInfo("Auto creating a new Speaker as none found");
-                    }
-                    speaker = new GameObject().AddComponent<Speaker>();
-                }
-                else
-                {
                     return null;
                 }
             }
+            else if (this.AutoCreateSpeakerIfNotFound)
+            {
+                speaker = new GameObject().AddComponent<Speaker>();
+            }
+            else
+            {
+                return null;
+            }
 
             // within a room, users are identified via the Realtime.Player class. this has a nickname and enables us to use custom properties, too
-            speaker.Actor = this.Client.CurrentRoom != null ? this.Client.CurrentRoom.GetPlayer(playerId) : null;
-            speaker.name = speaker.Actor != null && !string.IsNullOrEmpty(speaker.Actor.NickName) ? speaker.Actor.NickName : string.Format("Speaker for Player {0} Voice #{1}", playerId, voiceId);
+            speaker.Actor = (this.Client.CurrentRoom != null) ? this.Client.CurrentRoom.GetPlayer(playerId) : null;
+            speaker.name = speaker.Actor != null && !string.IsNullOrEmpty(speaker.Actor.NickName) ? speaker.Actor.NickName : String.Format("Speaker for Player {0} Voice #{1}", playerId, voiceId);
             speaker.OnRemoteVoiceRemoveAction += this.DeleteVoiceOnRemoteVoiceRemove;
             return speaker;
         }
@@ -786,7 +763,7 @@ namespace Photon.Voice.Unity
             {
                 speaker = this.SpeakerFactory(playerId, voiceId, voiceInfo.UserData);
             }
-            if (ReferenceEquals(null, speaker))
+            if (speaker == null)
             {
                 speaker = this.SimpleSpeakerFactory(playerId, voiceId, voiceInfo.UserData);
             }

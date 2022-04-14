@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Diagnostics;
 
 namespace Photon.Voice
 {
@@ -9,7 +11,7 @@ namespace Photon.Voice
 
 #if WINDOWS_UWP || ENABLE_WINMD_SUPPORT
             return new UWP.AudioInEnumerator(logger);
-#elif PHOTON_VOICE_WINDOWS || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#elif UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             return new Windows.AudioInEnumerator(logger);
 #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
             return new MacOS.AudioInEnumerator(logger);
@@ -37,8 +39,6 @@ namespace Photon.Voice
             {
                 case Codec.AudioOpus:
                     return OpusCodec.Factory.CreateEncoder<T[]>(info, logger);
-                case Codec.Raw: // Debug only. Assumes that original data is short[].
-                    return new RawCodec.Encoder<T>();
                 default:
                     throw new UnsupportedCodecException("Platform.CreateDefaultAudioEncoder", info.Codec);
             }
@@ -46,10 +46,8 @@ namespace Photon.Voice
 
         static public IAudioDesc CreateDefaultAudioSource(ILogger logger, DeviceInfo dev, int samplingRate, int channels, object otherParams = null)
         {
-#if PHOTON_VOICE_WINDOWS || UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             return new Windows.WindowsAudioInPusher(dev.IsDefault ? -1 : dev.IDInt, logger);
-#elif UNITY_WEBGL && UNITY_2021_2_OR_NEWER && !UNITY_EDITOR // requires ES6
-            return new Unity.WebAudioMicIn(samplingRate, channels, logger);
 #elif UNITY_IOS && !UNITY_EDITOR
             if (otherParams == null)
             {
@@ -100,15 +98,14 @@ namespace Photon.Voice
             {
                 case Codec.VideoVP8:
                 case Codec.VideoVP9:
-                    //return new FFmpegCodec.Encoder(logger, info);
                     return new VPxCodec.Encoder(logger, info);
-#if PHOTON_VOICE_WINDOWS || UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
                 case Codec.VideoH264:
                     //return new FFmpegCodec.Encoder(logger, info);
                     return new Windows.MFTCodec.VideoEncoder(logger, info);
 #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
                 case Codec.VideoH264:
-                    //return new FFmpegCodec.Encoder(logger, info);
+                    //ve = new FFmpegCodec.Encoder(logger, info);
                     return new MacOS.VideoEncoder(logger, info);
 #endif
                 default:
@@ -116,15 +113,14 @@ namespace Photon.Voice
             }
         }
 
-        static public IDecoderDirect<ImageBufferNative> CreateDefaultVideoDecoder(ILogger logger, VoiceInfo info)
+        static public IDecoderDirect<ImageOutputBuf> CreateDefaultVideoDecoder(ILogger logger, VoiceInfo info)
         {
             switch (info.Codec)
             {
                 case Codec.VideoVP8:
                 case Codec.VideoVP9:
-                    //return new FFmpegCodec.Decoder(logger);
                     return new VPxCodec.Decoder(logger);
-#if PHOTON_VOICE_WINDOWS || UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
                 case Codec.VideoH264:
                     //return new FFmpegCodec.Decoder(logger);
                     return new Windows.MFTCodec.VideoDecoder(logger, info);

@@ -137,7 +137,7 @@ namespace Photon.Voice.PUN
         /// <summary> If true, the PhotonView attached to the same GameObject has a valid ViewID > 0 </summary>
         public bool IsPhotonViewReady
         {
-            get { return !ReferenceEquals(null, this.photonView) && this.photonView && this.photonView.ViewID > 0; }
+            get { return this.photonView && this.photonView != null && this.photonView.ViewID > 0; }
         }
         
         internal bool RequiresSpeaker
@@ -220,62 +220,47 @@ namespace Photon.Voice.PUN
 
         private bool SetupRecorder()
         {
-            if (ReferenceEquals(null, this.recorderInUse)) // not manually assigned by user
+            if (this.recorderInUse == null) // not manually assigned by user
             {
                 if (this.UsePrimaryRecorder)
                 {
-                    if (!ReferenceEquals(null, PhotonVoiceNetwork.Instance.PrimaryRecorder) && PhotonVoiceNetwork.Instance.PrimaryRecorder)
+                    this.recorderInUse = PhotonVoiceNetwork.Instance.PrimaryRecorder;
+                    if (this.recorderInUse == null && this.Logger.IsErrorEnabled)
                     {
-                        this.recorderInUse = PhotonVoiceNetwork.Instance.PrimaryRecorder;
-                        return this.SetupRecorder(this.recorderInUse);
-                    }
-                    if (this.Logger.IsErrorEnabled)
-                    {
-                        this.Logger.LogError("PrimaryRecorder is not set.");
+                        this.Logger.LogError("PrimaryRecorder is not set");
                     }
                 }
-                Recorder[] recorders = this.GetComponentsInChildren<Recorder>();
-                if (recorders.Length > 0)
+                else
                 {
-                    Recorder recorder  = recorders[0];
-                    if (recorders.Length > 1 && this.Logger.IsWarningEnabled)
+                    Recorder[] recorders = this.GetComponentsInChildren<Recorder>();
+                    if (recorders.Length > 0)
                     {
-                        this.Logger.LogWarning("Multiple Recorder components found attached to the GameObject or its children.");
-                    }
-                    if (!ReferenceEquals(null, recorder) && recorder)
-                    {
-                        this.recorderInUse = recorder;
-                        return this.SetupRecorder(this.recorderInUse);
+                        this.recorderInUse = recorders[0];
+                        if (recorders.Length > 1 && this.Logger.IsWarningEnabled)
+                        {
+                            this.Logger.LogWarning("Multiple Recorder components found attached to the GameObject or its children");
+                        }
                     }
                 }
-                if (!this.AutoCreateRecorderIfNotFound)
+                if (this.recorderInUse == null)
                 {
-                    if (this.Logger.IsWarningEnabled)
+                    if (!this.AutoCreateRecorderIfNotFound)
                     {
-                        this.Logger.LogWarning("No Recorder found to be setup.");
+                        return false;
                     }
-                    return false;
+                    this.recorderInUse = this.gameObject.AddComponent<Recorder>();
                 }
-                this.recorderInUse = this.gameObject.AddComponent<Recorder>();
             }
             return this.SetupRecorder(this.recorderInUse);
         }
 
         private bool SetupRecorder(Recorder recorder)
         {
-            if (ReferenceEquals(null, recorder))
+            if (recorder == null)
             {
                 if (this.Logger.IsWarningEnabled)
                 {
-                    this.Logger.LogWarning("Cannot setup a null Recorder.");
-                }
-                return false;
-            }
-            if (!recorder)
-            {
-                if (this.Logger.IsWarningEnabled)
-                {
-                    this.Logger.LogWarning("Cannot setup a destroyed Recorder.");
+                    this.Logger.LogWarning("Cannot setup a null Recorder");
                 }
                 return false;
             }
@@ -283,7 +268,7 @@ namespace Photon.Voice.PUN
             {
                 if (this.Logger.IsWarningEnabled)
                 {
-                    this.Logger.LogWarning("Recorder setup cannot be done before assigning a valid ViewID to the PhotonView attached to the same GameObject as the PhotonVoiceView.");
+                    this.Logger.LogWarning("Recorder setup cannot be done before assigning a valid ViewID to the PhotonView attached to the same GameObject as the PhotonVoiceView");
                 }
                 return false;
             }
@@ -301,7 +286,7 @@ namespace Photon.Voice.PUN
 
         private bool SetupSpeaker()
         {
-            if (ReferenceEquals(null, this.speakerInUse)) // not manually assigned by user
+            if (this.speakerInUse == null) // not manually assigned by user
             {
                 Speaker[] speakers = this.GetComponentsInChildren<Speaker>(true);
                 if (speakers.Length > 0)
@@ -312,10 +297,13 @@ namespace Photon.Voice.PUN
                         this.Logger.LogWarning("Multiple Speaker components found attached to the GameObject or its children. Using the first one we found.");
                     }
                 }
-                if (ReferenceEquals(null, this.speakerInUse))
+                if (this.speakerInUse == null)
                 {
-                    bool instantiated = false;
-                    if (!ReferenceEquals(null, PhotonVoiceNetwork.Instance.SpeakerPrefab))
+                    if (!PhotonVoiceNetwork.Instance.AutoCreateSpeakerIfNotFound)
+                    {
+                        return false;
+                    }
+                    if (PhotonVoiceNetwork.Instance.SpeakerPrefab != null)
                     {
                         GameObject go = Instantiate(PhotonVoiceNetwork.Instance.SpeakerPrefab, this.transform, false);
                         speakers = go.GetComponentsInChildren<Speaker>(true);
@@ -327,25 +315,18 @@ namespace Photon.Voice.PUN
                                 this.Logger.LogWarning("Multiple Speaker components found attached to the GameObject (PhotonVoiceNetwork.SpeakerPrefab) or its children. Using the first one we found.");
                             }
                         }
-                        if (ReferenceEquals(null, this.speakerInUse))
+                        if (this.speakerInUse == null)
                         {
                             if (this.Logger.IsErrorEnabled)
                             {
                                 this.Logger.LogError("SpeakerPrefab does not have a component of type Speaker in its hierarchy.");
                             }
                             Destroy(go);
-                        }
-                        else
-                        {
-                            instantiated = true;
-                        }
-                    }
-                    if (!instantiated)
-                    {
-                        if (!PhotonVoiceNetwork.Instance.AutoCreateSpeakerIfNotFound)
-                        {
                             return false;
                         }
+                    }
+                    else
+                    {
                         this.speakerInUse = this.gameObject.AddComponent<Speaker>();
                     }
                 }
@@ -355,7 +336,7 @@ namespace Photon.Voice.PUN
 
         private bool SetupSpeaker(Speaker speaker)
         {
-            if (ReferenceEquals(null, speaker))
+            if (speaker == null)
             {
                 if (this.Logger.IsWarningEnabled)
                 {
@@ -363,29 +344,12 @@ namespace Photon.Voice.PUN
                 }
                 return false;
             }
-            if (!speaker)
-            {
-                if (this.Logger.IsWarningEnabled)
-                {
-                    this.Logger.LogWarning("Cannot setup a destroyed Speaker");
-                }
-                return false;
-            }
-            #if !PHOTON_VOICE_FMOD_ENABLE
             AudioSource audioSource = speaker.GetComponent<AudioSource>();
-            if (ReferenceEquals(null, audioSource))
+            if (audioSource == null)
             {
                 if (this.Logger.IsWarningEnabled)
                 {
-                    this.Logger.LogWarning("Unexpected (null?): no AudioSource found attached to the same GameObject as the Speaker component");
-                }
-                return false;
-            }
-            if (!audioSource)
-            {
-                if (this.Logger.IsWarningEnabled)
-                {
-                    this.Logger.LogWarning("Unexpected (destroyed?): no AudioSource found attached to the same GameObject as the Speaker component");
+                    this.Logger.LogWarning("Unexpected: no AudioSource found attached to the same GameObject as the Speaker component");
                 }
                 return false;
             }
@@ -410,7 +374,6 @@ namespace Photon.Voice.PUN
                     this.Logger.LogWarning("audioSource.enabled is false, playback may not work properly");
                 }
             }
-            #endif
             return true;
         }
 

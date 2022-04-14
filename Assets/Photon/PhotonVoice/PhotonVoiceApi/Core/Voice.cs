@@ -154,9 +154,6 @@ namespace Photon.Voice
         /// </summary>
         public int SendSpacingProfileMax { get { return sendSpacingProfile.Max; } }
 
-        public byte ID { get { return id; } }
-        public byte EvNumber { get { return evNumber; } }
-
         #region nonpublic
 
         protected VoiceInfo info;
@@ -191,8 +188,8 @@ namespace Photon.Voice
 
         protected string shortName { get { return "v#" + id + "ch#" + voiceClient.channelStr(channelId); } }
 
-        public string Name { get { return "Local " + info.Codec + " v#" + id + " ch#" + voiceClient.channelStr(channelId); } }
-        public string LogPrefix { get { return "[PV] " + Name; } }
+        internal string Name { get { return "Local " + info.Codec + " v#" + id + " ch#" + voiceClient.channelStr(channelId); } }
+        internal string LogPrefix { get { return "[PV] " + Name; } }
 
         private const int NO_TRANSMIT_TIMEOUT_MS = 100; // should be greater than SendFrame() call interval
         private int lastTransmitTime = Environment.TickCount - NO_TRANSMIT_TIMEOUT_MS;
@@ -283,7 +280,7 @@ namespace Photon.Voice
         SpacingProfile sendSpacingProfile = new SpacingProfile(1000);
         #endregion
 
-        /// <summary>Remove this voice from it's VoiceClient (using VoiceClient.RemoveLocalVoice</summary>
+        /// <summary>Remove this voice from it's VoiceClient (using VoiceClient.RemoveLocalVoice</summary>.</summary>
         public void RemoveSelf()
         {
             if (this.voiceClient != null) // dummy voice can try to remove self
@@ -308,54 +305,24 @@ namespace Photon.Voice
     /// <summary>Event Actions and other options for a remote voice (incoming stream).</summary>
     public struct RemoteVoiceOptions
     {
-        public RemoteVoiceOptions(ILogger logger, string logPrefix, VoiceInfo voiceInfo)
-        {
-            this.logger = logger;
-            this.logPrefix = logPrefix;
-            this.voiceInfo = voiceInfo;
-            this.Decoder = null;
-            this.OnRemoteVoiceRemoveAction = null;
-        }
-
-		/// <summary>
-        /// Create default audio decoder and register a method to be called when a data frame is decoded.
+        /// <summary>
+        /// Register a method to be called when new data frame received..
         /// </summary>
         public void SetOutput(Action<FrameOut<float>> output)
         {
-            if (voiceInfo.Codec == Codec.Raw) // Debug only. Assumes that original data is short[].
-            {
-                this.Decoder = new RawCodec.Decoder<short>(new RawCodec.ShortToFloat(output as Action<FrameOut<float>>).Output);
-                return;
-            }
-            setOutput<float>(output);
+            outType = OutputType.Float;
+            this.output = output;
         }
-
-        /// <summary>
-        /// Create default audio decoder and register a method to be called when a data frame is decoded.
-        /// </summary>
         public void SetOutput(Action<FrameOut<short>> output)
         {
-            if (voiceInfo.Codec == Codec.Raw) // Debug only. Assumes that original data is short[].
-            {
-                this.Decoder = new RawCodec.Decoder<short>(output);
-                return;
-            }
-            setOutput<short>(output);
+            outType = OutputType.Short;
+            this.output = output;
         }
-        
-        private void setOutput<T>(Action<FrameOut<T>> output)
+        public void SetOutput(Action<ImageOutputBuf> output)
         {
-            logger.LogInfo(logPrefix + ": Creating default decoder " + voiceInfo.Codec + " for output FrameOut<" + typeof(T) + ">");
-            if (voiceInfo.Codec == Codec.AudioOpus)
-            {
-                this.Decoder = new OpusCodec.Decoder<T>(output, logger);
-            }
-            else
-            {
-                logger.LogError(logPrefix + ": FrameOut<" + typeof(T) + "> output set for non-audio decoder " + voiceInfo.Codec);
-            }
+            outType = OutputType.Image;
+            this.output = output;
         }
-
         /// <summary>
         /// Register a method to be called when the remote voice is removed.
         /// </summary>
@@ -364,10 +331,11 @@ namespace Photon.Voice
         /// <summary>Remote voice data decoder. Use to set decoder options or override it with user decoder.</summary>
         public IDecoder Decoder { get; set; }
 
-        private readonly ILogger logger;
-        private readonly VoiceInfo voiceInfo;
-        internal string logPrefix { get; }
+        public ImageFormat OutputImageFormat { get; set; }
 
+        internal enum OutputType { None, Float, Short, Image };
+        internal OutputType outType { get; private set; }
+        internal Object output { get; private set; }
     }
 
     internal class RemoteVoice : IDisposable
@@ -385,7 +353,6 @@ namespace Photon.Voice
         internal RemoteVoice(VoiceClient client, RemoteVoiceOptions options, int channelId, int playerId, byte voiceId, VoiceInfo info, byte lastEventNumber)
         {
             this.options = options;
-            this.LogPrefix = options.logPrefix;
             this.voiceClient = client;
             this.channelId = channelId;
             this.playerId = playerId;
@@ -393,18 +360,6 @@ namespace Photon.Voice
             this.Info = info;
             this.lastEvNumber = lastEventNumber;
 
-            if (this.options.Decoder == null)
-            {
-                var m = LogPrefix + ": decoder is null (set it with options Decoder property or SetOutput method in OnRemoteVoiceInfoAction)";
-                voiceClient.logger.LogError(m);
-                disposed = true;
-                return;
-            }
-
-#if PHOTON_VOICE_THREADING_DISABLE
-            voiceClient.logger.LogInfo(LogPrefix + ": Starting decode singlethreaded");
-            options.Decoder.Open(Info);
-#else
 #if NETFX_CORE
             Windows.System.Threading.ThreadPool.RunAsync((x) =>
             {
@@ -415,10 +370,10 @@ namespace Photon.Voice
             Util.SetThreadName(t, "[PV] Dec" + shortName);
             t.Start();
 #endif
-#endif
         }
         private string shortName { get { return "v#" + voiceId + "ch#" + voiceClient.channelStr(channelId) + "p#" + playerId; } }
-        public string LogPrefix { get; private set; }
+        public string Name { get { return "Remote " + Info.Codec + " v#" + voiceId + " ch#" + voiceClient.channelStr(channelId) + " p#" + playerId; } }
+        public string LogPrefix { get { return "[PV] " + Name; } }
        
         SpacingProfile receiveSpacingProfile = new SpacingProfile(1000);
         
@@ -478,19 +433,13 @@ namespace Photon.Voice
 
         void receiveFrame(ref FrameBuffer frame)
         {
-#if PHOTON_VOICE_THREADING_DISABLE
-            if (disposed) return;
-
-            options.Decoder.Input(ref frame);
-            frame.Release();
-#else
             lock (disposeLock) // sync with Dispose and decodeThread 'finally'
             {
                 if (disposed) return;
 
                 receiveSpacingProfile.Update(false, (frame.Flags & FrameFlags.EndOfStream) != 0);
                 lock (frameQueue)
-                {
+                {                    
                     frameQueue.Enqueue(frame);
                     frame.Retain();
                     if ((frame.Flags & FrameFlags.EndOfStream) != 0)
@@ -500,7 +449,6 @@ namespace Photon.Voice
                 }
                 frameQueueReady.Set();
             }
-#endif
         }
 
         void receiveNullFrames(int count)
@@ -522,21 +470,115 @@ namespace Photon.Voice
             }
         }
 
+        IDecoder createDefaultDecoder()
+        {
+            switch (options.outType)
+            {
+                case RemoteVoiceOptions.OutputType.Float:
+                    if (Info.Codec == Codec.AudioOpus)
+                    {
+                        voiceClient.logger.LogInfo(LogPrefix + ": Creating default decoder for output type = " + options.outType);
+                        return new OpusCodec.Decoder<float>(options.output as Action<FrameOut<float>>, voiceClient.logger);
+                    }
+                    else if (Info.Codec == Codec.Raw)
+					{
+						voiceClient.logger.LogInfo(LogPrefix + ": Creating default decoder for output type = " + options.outType);
+						return new RawCodec.Decoder<float>(options.output as Action<FrameOut<float>>);
+					}
+					else
+					{
+                        voiceClient.logger.LogError(LogPrefix + ": Action<float[]> output set for not audio decoder (output type = " + options.outType + ")");
+                        return null;
+                    }
+                case RemoteVoiceOptions.OutputType.Short:
+                    if (Info.Codec == Codec.AudioOpus)
+                    {
+                        voiceClient.logger.LogInfo(LogPrefix + ": Creating default decoder for output type = " + options.outType);
+                        return new OpusCodec.Decoder<short>(options.output as Action<FrameOut<short>>, voiceClient.logger);
+                    }
+					else if (Info.Codec == Codec.Raw)
+					{
+						voiceClient.logger.LogInfo(LogPrefix + ": Creating default decoder for output type = " + options.outType);
+						return new RawCodec.Decoder<short>(options.output as Action<FrameOut<short>>);
+					}
+					else
+					{
+                        voiceClient.logger.LogError(LogPrefix + ": Action<short[]> output set for not audio decoder (output type = " + options.outType + ")");
+                        return null;
+                    }
+#if PHOTON_VOICE_VIDEO_ENABLE
+                case RemoteVoiceOptions.OutputType.Image:
+                    voiceClient.logger.LogInfo(LogPrefix + ": Creating default decoder for output type = " + options.outType);
+                    IDecoderQueuedOutputImageNative vd = null;
+                    switch (Info.Codec)
+                    {
+                        case Codec.VideoVP8:
+                        case Codec.VideoVP9:
+                            vd = new VPxCodec.Decoder(voiceClient.logger);
+                            vd.Output = options.output as Action<ImageOutputBuf>;
+                            break;
+                        case Codec.VideoH264:
+                            //vd = new FFmpegCodec.Decoder(voiceClient.transport);
+                            //vd.Output = options.output as Action<ImageOutputBuf>;
+                            break;
+                        default:
+                            voiceClient.logger.LogError(LogPrefix + ": Action<ImageOutputBuf> output set for not video decoder (output type = " + options.outType + ")");
+                            return null;
+                    }
+                    if (vd != null && options.OutputImageFormat != ImageFormat.Undefined)
+                    {
+                        vd.OutputImageFormat = options.OutputImageFormat;
+                    }
+                    return vd;
+#endif
+                case RemoteVoiceOptions.OutputType.None:
+                default:
+                    voiceClient.logger.LogError(LogPrefix + ": Output must be set in RemoteVoiceOptions with SetOutput call (output type = " + options.outType + ")");
+                    return null;
+            }
+        }
+
         void decodeThread()
         {
-            //#if UNITY_5_3_OR_NEWER
-            //            UnityEngine.Profiling.Profiler.BeginThreadProfiling("PhotonVoice", LogPrefix);
-            //#endif
+
+//#if UNITY_5_3_OR_NEWER
+//            UnityEngine.Profiling.Profiler.BeginThreadProfiling("PhotonVoice", LogPrefix);
+//#endif
+
+            IDecoder decoder;
+            if (this.options.Decoder == null)
+            {
+                decoder = createDefaultDecoder();                
+            }
+            else
+            {
+                if (options.outType == RemoteVoiceOptions.OutputType.None)
+                {
+                    decoder = this.options.Decoder;
+                }
+                else
+                {
+                    decoder = null;
+                    voiceClient.logger.LogError(LogPrefix + ": Setting decoder output with RemoteVoiceOptions SetOutput is not supported for custom decoders (set via RemoteVoiceOptions Decoder property). Assign output directly to decoder (output type = " + options.outType + ")");
+                }
+            }
+
+            if (decoder == null)
+            {
+                lock (disposeLock)
+                {
+                    disposed = true;
+                }
+                return;
+            }
 
             voiceClient.logger.LogInfo(LogPrefix + ": Starting decode thread");
-
-            var decoder = this.options.Decoder;
 
             try
             {
 #if UNITY_ANDROID
                 UnityEngine.AndroidJNI.AttachCurrentThread();
-#endif
+#endif                
                 decoder.Open(Info);
 
                 while (!disposed)
@@ -641,13 +683,6 @@ namespace Photon.Voice
 
         public void Dispose()
         {
-#if PHOTON_VOICE_THREADING_DISABLE
-            if (options.Decoder != null)
-            {
-                disposed = true;
-                options.Decoder.Dispose();
-            }
-#else
             lock (disposeLock) // sync with receiveFrame/receiveNullFrames
             {
                 if (!disposed)
@@ -656,7 +691,6 @@ namespace Photon.Voice
                     frameQueueReady.Set(); // let decodeThread dispose resporces and exit
                 }
             }
-#endif
         }
     }
 }

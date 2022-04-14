@@ -60,7 +60,7 @@ namespace Photon.Voice
             this.OpRaiseEvent(VoiceEvent.FrameCode, frameData, opt, sendOpt);
 
             // each voice has it's own connection? else, we could aggregate voices data in less count of datagrams
-            while (this.LoadBalancingPeer.SendOutgoingCommands());
+            this.LoadBalancingPeer.SendOutgoingCommands();
         }
 
 

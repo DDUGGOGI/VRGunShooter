@@ -23,9 +23,7 @@ namespace Photon.Voice
     }
 
     /// <summary>Generic encoder interface.</summary>
-    /// <remarks>
     /// Depending on implementation, encoder should either call Output on eaach data frame or return next data frame in DequeueOutput() call.
-    /// </remarks>
     public interface IEncoder : IDisposable
     {
         /// <summary>If not null, the object is in invalid state.</summary>
@@ -36,7 +34,7 @@ namespace Photon.Voice
         ArraySegment<byte> DequeueOutput(out FrameFlags flags);
         /// <summary>Forces an encoder to flush and produce frame with EndOfStream flag (in output queue).</summary>
         void EndOfStream();
-        /// <summary>Returns an platform-specific interface.</summary>
+
         I GetPlatformAPI<I>() where I : class;
     }
 
@@ -51,7 +49,6 @@ namespace Photon.Voice
     /// <summary>Interface for an encoder which consumes images via explicit call.</summary>
     public interface IEncoderDirectImage : IEncoderDirect<ImageBufferNative>
     {
-        /// <summary>Recommended encoder input image format. Encoder may support other formats.</summary>
         ImageFormat ImageFormat { get; }
     }
 
@@ -74,8 +71,24 @@ namespace Photon.Voice
     /// <summary>Interface for an decoder which outputs data via explicit call.</summary>
     public interface IDecoderDirect<B> : IDecoder
     {
-        /// <summary>Callback to call when a new decoded data buffer is available.</summary>
         Action<B> Output { get; set; }
+    }
+
+    // Buffer for output actions of image decoders
+    public struct ImageOutputBuf
+    {
+        public IntPtr Buf;
+        public int Width;
+        public int Height;
+        public int Stride;
+        public ImageFormat ImageFormat;
+    }
+
+    public interface IDecoderQueuedOutputImageNative : IDecoderDirect<ImageOutputBuf>
+    {
+        ImageFormat OutputImageFormat { get; set; }
+        // if provided, decoder writes output to it 
+        Func<int, int, IntPtr> OutputImageBufferGetter { get; set; }
     }
 
     /// <summary>Exception thrown if an unsupported audio sample type is encountered.</summary>
@@ -96,6 +109,7 @@ namespace Photon.Voice
         /// <summary>Create a new UnsupportedCodecException.</summary>
         /// <param name="info">The info prepending standard message.</param>
         /// <param name="codec">The codec actually encountered.</param>
+        /// <param name="logger">Loogger.</param>
         public UnsupportedCodecException(string info, Codec codec) : base("[PV] " + info + ": unsupported codec: " + codec) { }
     }
 
@@ -103,8 +117,7 @@ namespace Photon.Voice
     class UnsupportedPlatformException : Exception
     {
         /// <summary>Create a new UnsupportedPlatformException.</summary>
-        /// <param name="subject">The info prepending standard message.</param>
-        /// /// <param name="platform">Optional platform name.</param>
+        /// <param name="info">The info prepending standard message.</param>
         public UnsupportedPlatformException(string subject, string platform = null) : base("[PV] " + subject + " does not support " + (platform == null ? "current" : platform) + " platform") { }
     }
 
@@ -125,13 +138,13 @@ namespace Photon.Voice
     public enum ImageFormat
     {
         Undefined,
-        I420, // native vpx (no format conversion before encodong)
+        I420, // native vpx (no format conversion before encodong)                        
         YV12, // native vpx (no format conversion before encodong)
         Android420,
+        RGBA,
         ABGR,
         BGRA,
         ARGB,
-        NV12,
     }
 
     public enum Rotation
@@ -178,130 +191,32 @@ namespace Photon.Voice
     }
 
     // Image buffer pool support
-    public struct ImageBufferInfo
+    public class ImageBufferInfo
     {
-        [StructLayout(LayoutKind.Sequential)] // the struct instance may be used where IntPtr[] expected by native method
-        public struct StrideSet
-        {
-            private int stride0;
-            private int stride1;
-            private int stride2;
-            private int stride3;
-
-            public StrideSet(int length, int s0 = 0, int s1 = 0, int s2 = 0, int s3 = 0)
-            {
-                Length = length;
-                stride0 = s0;
-                stride1 = s1;
-                stride2 = s2;
-                stride3 = s3;
-            }
-            public int this[int key]
-            {
-                get
-                {
-                    switch (key)
-                    {
-                        case 0: return stride0;
-                        case 1: return stride1;
-                        case 2: return stride2;
-                        case 3: return stride3;
-                        default: return 0;
-                    }
-                }
-
-                set
-                {
-                    switch (key)
-                    {
-                        case 0: stride0 = value; break;
-                        case 1: stride1 = value; break;
-                        case 2: stride2 = value; break;
-                        case 3: stride3 = value; break;
-                    }
-                }
-            }
-
-            public int Length { get; private set; }
-        }
-
         public int Width { get; }
         public int Height { get; }
-        public StrideSet Stride { get; }
+        public int[] Stride { get; }
         public ImageFormat Format { get; }
         public Rotation Rotation { get; set; }
         public Flip Flip { get; set; }
-        public ImageBufferInfo(int width, int height, StrideSet stride, ImageFormat format)
+        public ImageBufferInfo(int width, int height, int[] stride, ImageFormat format)
         {
             Width = width;
             Height = height;
             Stride = stride;
             Format = format;
-            Rotation = Rotation.Rotate0;
-            Flip = Flip.None;
         }
     }
 
     public class ImageBufferNative
     {
-        [StructLayout(LayoutKind.Sequential)] // the struct instance may be used where IntPtr[] expected by native method (does not work on Mac, so we use intermediate IntPtr[] to pass planes)
-        public struct PlaneSet
-        {
-            private IntPtr plane0;
-            private IntPtr plane1;
-            private IntPtr plane2;
-            private IntPtr plane3;
-
-            public PlaneSet(int length, IntPtr p0 = default(IntPtr), IntPtr p1 = default(IntPtr), IntPtr p2 = default(IntPtr), IntPtr p3 = default(IntPtr))
-            {
-                Length = length;
-                plane0 = p0;
-                plane1 = p1;
-                plane2 = p2;
-                plane3 = p3;
-            }
-            public IntPtr this[int key]
-            {
-                get
-                {
-                    switch (key)
-                    {
-                        case 0: return plane0;
-                        case 1: return plane1;
-                        case 2: return plane2;
-                        case 3: return plane3;
-                        default: return IntPtr.Zero;
-                    }
-                }
-
-                set
-                {
-                    switch (key)
-                    {
-                        case 0: plane0 = value; break;
-                        case 1: plane1 = value; break;
-                        case 2: plane2 = value; break;
-                        case 3: plane3 = value; break;
-                    }
-                }
-            }
-
-            public int Length { get; private set; }
-        }
-
         public ImageBufferNative(ImageBufferInfo info)
         {
             Info = info;
-            Planes = new PlaneSet(info.Stride.Length);
+            Planes = new IntPtr[info.Stride.Length];
         }
-
-        public ImageBufferNative(IntPtr buf, int width, int height, int stride, ImageFormat imageFormat)
-        {
-            Info = new ImageBufferInfo(width, height, new ImageBufferInfo.StrideSet(1, stride), imageFormat);
-            Planes = new PlaneSet(1, buf);
-        }
-        public ImageBufferInfo Info;
-        public PlaneSet Planes; // operator[] setter does not compile if this member is a property (because [] applies to a copy of the property)
+        public ImageBufferInfo Info { get; }
+        public IntPtr[] Planes { get; protected set; }
 
         // Release resources for dispose or reuse.
         public virtual void Release() { }
@@ -320,7 +235,7 @@ namespace Photon.Voice
             
             for (int i = 0; i < info.Stride.Length; i++)
             {
-                Planes[i] = Marshal.AllocHGlobal(info.Stride[i] * info.Height);
+                Planes[i] = System.Runtime.InteropServices.Marshal.AllocHGlobal(info.Stride[i] * info.Height);
             }
         }
 
@@ -336,7 +251,7 @@ namespace Photon.Voice
         {
             for (int i = 0; i < Info.Stride.Length; i++)
             {
-                Marshal.FreeHGlobal(Planes[i]);
+                System.Runtime.InteropServices.Marshal.FreeHGlobal(Planes[i]);
             }
         }
     }
@@ -354,6 +269,8 @@ namespace Photon.Voice
                 throw new Exception("ImageBufferNativeGCHandleSinglePlane wrong plane count " + info.Stride.Length);
             }
             this.pool = pool;
+
+            Planes = new IntPtr[1];
         }
         public void PinPlane(byte[] plane)
         {

@@ -33,7 +33,7 @@ namespace Photon.Voice.Unity
         }
 
         [SerializeField]
-        protected DebugLevel logLevel = DebugLevel.WARNING;
+        protected DebugLevel logLevel = DebugLevel.INFO;
         public DebugLevel LogLevel
         {
             get

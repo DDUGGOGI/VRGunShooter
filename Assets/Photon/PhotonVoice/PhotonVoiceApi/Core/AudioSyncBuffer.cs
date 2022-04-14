@@ -225,7 +225,7 @@ namespace Photon.Voice
             var f = this.frameQueue.Dequeue();
             if (f != this.emptyFrame)
             {
-                this.framePool.Release(f, f.Length);
+                this.framePool.Release(f);
             }
 
         }

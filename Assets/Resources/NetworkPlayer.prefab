@@ -663,7 +663,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7239086239622234004}
   - component: {fileID: 7239086239633495666}
-  - component: {fileID: 7239086239632201304}
   - component: {fileID: 7239086239622521789}
   - component: {fileID: 7239086239622521787}
   - component: {fileID: 7239086239622521788}
@@ -701,7 +700,7 @@ CharacterController:
   m_GameObject: {fileID: 7239086239622521786}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.75
   m_Radius: 0.5
@@ -710,34 +709,6 @@ CharacterController:
   m_SkinWidth: 0.01
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7239086239632201304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7239086239622521786}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0950df82e7936c84983497630bde5b54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Acceleration: 0.1
-  Damping: 0.3
-  BackAndSideDampen: 0.5
-  JumpForce: 0.3
-  RotationAmount: 1.5
-  RotationRatchet: 45
-  SnapRotation: 1
-  RotateAroundGuardianCenter: 0
-  FixedSpeedSteps: 0
-  HmdResetsY: 1
-  HmdRotatesY: 1
-  GravityModifier: 1
-  useProfileData: 1
-  EnableLinearMovement: 1
-  EnableRotation: 1
-  RotationEitherThumbstick: 0
 --- !u!114 &7239086239622521789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -797,7 +768,10 @@ MonoBehaviour:
   leftHand: {fileID: 7239086241067501630}
   rightHand: {fileID: 7239086239055605186}
   centerCam: {fileID: 7239086239620605186}
-  speed: 3
+  speed: 1
+  cc: {fileID: 7239086239633495666}
+  gravity: -20
+  jumpPower: 2
 --- !u!1 &7239086239622521790
 GameObject:
   m_ObjectHideFlags: 0

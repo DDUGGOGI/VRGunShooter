@@ -1941,7 +1941,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9117388361335508154
 Transform:
   m_ObjectHideFlags: 0
@@ -2219,7 +2219,6 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 6477753983101013297}
-  - {fileID: 6737393741145483468}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -3184,7 +3183,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9117388361597597075
 Transform:
   m_ObjectHideFlags: 0
@@ -4630,6 +4629,7 @@ GameObject:
   - component: {fileID: 9117388362060151038}
   - component: {fileID: 7745456617352559742}
   - component: {fileID: 6737393741145483468}
+  - component: {fileID: 5649608744356617486}
   m_Layer: 7
   m_Name: GrabVolumeBigLeft
   m_TagString: EquipPoint
@@ -4678,6 +4678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fffde3ecf9b7cbe4cb49ea3528cab064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PV: {fileID: 5649608744356617486}
   isRightHandGrab: 0
   isLeftHandGrab: 0
   isRightTrigger: 0
@@ -4705,6 +4706,29 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &5649608744356617486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9117388362060151008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6737393741145483468}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &9117388362072261610
 GameObject:
   m_ObjectHideFlags: 0
@@ -6634,7 +6658,6 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 8296179665910953735}
-  - {fileID: 4057303413011109869}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -7284,6 +7307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fffde3ecf9b7cbe4cb49ea3528cab064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PV: {fileID: 6282041329360190985}
   isRightHandGrab: 0
   isLeftHandGrab: 0
   isRightTrigger: 0
@@ -7586,6 +7610,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+--- !u!4 &1513802548404565127 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7747707641783006989, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+  m_PrefabInstance: {fileID: 9117388361419588490}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5350129502126100671 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3798788515800699701, guid: 36e119fe082e124448816a38b8bda006, type: 3}
@@ -7594,10 +7623,5 @@ Transform:
 --- !u!4 &655781237944553916 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8619526741041287734, guid: 36e119fe082e124448816a38b8bda006, type: 3}
-  m_PrefabInstance: {fileID: 9117388361419588490}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1513802548404565127 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7747707641783006989, guid: 36e119fe082e124448816a38b8bda006, type: 3}
   m_PrefabInstance: {fileID: 9117388361419588490}
   m_PrefabAsset: {fileID: 0}

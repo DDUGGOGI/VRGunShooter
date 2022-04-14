@@ -33,11 +33,16 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        if (PV.IsMine)
+      if (!PV.IsMine)
         {
-            PlayerArrowMove();
-            PV.RPC("PlayerArrowMove", RpcTarget.AllBuffered);
+            cam.SetActive(false);
+            return;
         }
+
+
+       PlayerArrowMove();
+       PV.RPC("PlayerArrowMove", RpcTarget.AllBuffered);
+        
         
     }
 

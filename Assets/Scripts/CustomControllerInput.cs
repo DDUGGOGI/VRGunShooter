@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class CustomControllerInput : MonoBehaviour
 {
+    public PhotonView PV;
+
     public bool isRightHandGrab = false;
     public bool isLeftHandGrab = false;
     public bool isRightTrigger = false;
@@ -27,6 +30,8 @@ public class CustomControllerInput : MonoBehaviour
 
     void Update()
     {
+        if (!PV.IsMine) return;
+
         RightHandGrab();
         WeaponCheck();
         RighthandDisapearHandmesh();

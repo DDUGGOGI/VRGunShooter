@@ -51,5 +51,9 @@ public class Laptop : MonoBehaviour
             laptopBody.gameObject.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", white );
             
         }
+        else
+        {
+            return;
+        }
     }
 }

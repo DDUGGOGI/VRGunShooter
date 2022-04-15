@@ -23961,6 +23961,7 @@ Rigidbody:
   m_Constraints: 0
   m_CollisionDetection: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1001 &2047420070
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24211,6 +24212,8 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.05179465, y: 0.3040555, z: 0.12232137}
   m_Center: {x: 0.5274096, y: 0.18280467, z: 0.37049997}
+=======
+>>>>>>> parent of 123c2fc (LightUp)
 =======
 >>>>>>> parent of 123c2fc (LightUp)
 --- !u!1 &2049638765

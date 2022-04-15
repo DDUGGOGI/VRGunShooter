@@ -95,7 +95,10 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
         GetAnotherButton();
         //PV.RPC("GetAnotherButton", RpcTarget.AllBuffered);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 123c2fc (LightUp)
 =======
 >>>>>>> parent of 123c2fc (LightUp)
     }
@@ -104,7 +107,11 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
     private void OnTriggerStay(Collider other)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         otherCollider = other;
+=======
+        
+>>>>>>> parent of 123c2fc (LightUp)
 =======
         
 >>>>>>> parent of 123c2fc (LightUp)
@@ -120,7 +127,10 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 123c2fc (LightUp)
 =======
 >>>>>>> parent of 123c2fc (LightUp)
 

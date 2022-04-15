@@ -652,10 +652,9 @@ MonoBehaviour:
   grabEnd: 0.35
   m_parentHeldObject: 1
   m_moveHandPosition: 0
-  m_gripTransform: {fileID: 0}
+  m_gripTransform: {fileID: 6038650530525759506}
   m_grabVolumes:
   - {fileID: 6038650530525759501}
-  - {fileID: 6038650530223949641}
   m_controller: 1
   m_parentTransform: {fileID: 6038650529419655534}
   m_player: {fileID: 6038650529969246947}
@@ -2738,7 +2737,7 @@ GameObject:
   - component: {fileID: 1792720911468077210}
   - component: {fileID: 6038650529969246957}
   m_Layer: 7
-  m_Name: OVRPlayerController 6
+  m_Name: OVRPlayerController 6 ovr
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6518,10 +6517,9 @@ MonoBehaviour:
   grabEnd: 0.35
   m_parentHeldObject: 1
   m_moveHandPosition: 0
-  m_gripTransform: {fileID: 0}
+  m_gripTransform: {fileID: 6038650531016255806}
   m_grabVolumes:
   - {fileID: 6038650531016255807}
-  - {fileID: 6038650529764314857}
   m_controller: 2
   m_parentTransform: {fileID: 6038650531018628378}
   m_player: {fileID: 6038650529969246947}

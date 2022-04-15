@@ -81,7 +81,7 @@ public class CustomControllerInput : MonoBehaviourPunCallbacks
     }
 
     
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         triggerWeapon = other.gameObject.transform;
         //WM=other.gameObject.GetComponent<WeaponManagerVR>();

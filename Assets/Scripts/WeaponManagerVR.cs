@@ -65,7 +65,7 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
     [Header("Magazine")]
     public Transform currentMagazine;
 
-    public Collider otherCollider;
+
 
 
 
@@ -91,17 +91,23 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
     void Update()
     {
         InputCheck();
-        
 
         GetAnotherButton();
         //PV.RPC("GetAnotherButton", RpcTarget.AllBuffered);
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 123c2fc (LightUp)
     }
 
 
     private void OnTriggerStay(Collider other)
     {
+<<<<<<< HEAD
         otherCollider = other;
+=======
+        
+>>>>>>> parent of 123c2fc (LightUp)
         PickEquipment(other);
         //PV.RPC("PickEquipment", RpcTarget.AllBuffered);
 
@@ -113,7 +119,10 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
             //PV.RPC("touchFloor", RpcTarget.AllBuffered);
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 123c2fc (LightUp)
 
 
     void InputCheck()
@@ -139,111 +148,10 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
         isRightTrigger = false;
         isLefttTrigger = false;
 }
-
-    public void PickEquipmentTest(Collider other)
-    {
-
-        if (OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger))   // 1. 오른손 그립 아이템 집기
-        {
-            PV.RequestOwnership();
-            print("오너쉽 확인");
-
-            gameObject.GetComponent<BoxCollider>().isTrigger = true;               // 총의 콜라이더 켜 충돌방지
-            gameObject.GetComponent<Rigidbody>().isKinematic = true;        // 총의 물리 중지
+    
 
 
-            //PickEquipment(pickItemName);
-            triggerOBJ = other.gameObject.transform;                                                 // 트리거 중인 게임 오브젝트 표시
-
-            print("셋페어런츠 이전");
-            //PV.RPC("RPCsetparent", RpcTarget.AllBuffered, gameObject.transform, other.gameObject.transform);
-            gameObject.transform.parent = other.gameObject.transform;
-            print("셋페어런츠 이후");
-            //gameObject.transform.position = other.gameObject.transform.position;
-
-            gameObject.transform.localPosition = Vector3.zero;
-            gameObject.transform.localScale = Vector3.one;
-            gameObject.transform.localRotation = other.gameObject.transform.localRotation;
-
-            other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;       // 손의 현재 무기를 최신화
-            CCI = other.transform;
-            //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
-            //other.gameObject.transform.lossyScale = firstScale;
-
-
-            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine" || gameObject.name == "Pistol9_magazineRight")
-            {
-                audioSource.PlayOneShot(audio[2]);                                      // 픽업 사운드
-            }
-
-
-        }
-        else if (other.name == "GrabVolumeBigRight" && OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))    // 2. 오른손 핸드 아이템 놓기
-        {
-            gameObject.transform.parent = null;
-
-            //gameObject.transform.position = gameObject.transform.position;
-            //gameObject.transform.localRotation = gameObject.transform.localRotation;
-            other.GetComponent<CustomControllerInput>().currentWeapon = null;
-            CCI = null;
-            gameObject.GetComponent<BoxCollider>().isTrigger = false;      // 총의 콜라이더 꺼 물리실행
-            gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
-
-
-            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
-            {
-                audioSource.PlayOneShot(audio[2]);
-            }
-
-        }
-        else if (other.name == "GrabVolumeBigLeft" && OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))   // 3. 왼손 그립 아이템 집기
-        {
-
-            gameObject.GetComponent<BoxCollider>().isTrigger = true;
-            gameObject.GetComponent<Rigidbody>().isKinematic = true;
-            //PickEquipment(pickItemName);
-            triggerOBJ = other.gameObject.transform;
-            gameObject.transform.parent = other.gameObject.transform;
-            gameObject.transform.position = other.gameObject.transform.position;
-            gameObject.transform.localRotation = Quaternion.Euler(0, 0, 180f);  //  왼손 집으면 정자세
-
-            other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;
-            CCI = other.transform;
-            //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화
-
-
-            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
-            {
-                audioSource.PlayOneShot(audio[2]);
-            }
-
-
-        }
-        else if (other.name == "GrabVolumeBigLeft" && OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger))    // 4. 왼손 핸드 아이템 놓기
-        {
-
-            gameObject.transform.parent = null;
-            //gameObject.transform.position = gameObject.transform.position;
-            //gameObject.transform.localRotation = gameObject.transform.localRotation;
-            other.GetComponent<CustomControllerInput>().currentWeapon = null;
-            CCI = null;
-            gameObject.GetComponent<BoxCollider>().isTrigger = false;           // 콜라이더 실행
-            gameObject.GetComponent<Rigidbody>().isKinematic = false;       // 물리 실행
-                                                                            //other.gameObject.transform.DOScale(defaultScale, 0.1f);     //스케일 값 초기화
-
-
-            if (gameObject.name == "Pistol9" || gameObject.name == "Pistol9_magazine 1" || gameObject.name == "Pistol9_magazineRight")
-            {
-                audioSource.PlayOneShot(audio[2]);
-            }
-
-        }
-    }
-
-
-
-        public void PickEquipment(Collider other)
+    public void PickEquipment(Collider other)
     {
         
         if (other.name == "GrabVolumeBigRight" && OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger))   // 1. 오른손 그립 아이템 집기
@@ -266,8 +174,8 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
 
             gameObject.transform.localPosition = Vector3.zero;
             gameObject.transform.localScale = Vector3.one;
-            gameObject.transform.localRotation = other.gameObject.transform.localRotation;
 
+            gameObject.transform.localRotation = other.gameObject.transform.localRotation;
             other.GetComponent<CustomControllerInput>().currentWeapon = gameObject.transform;       // 손의 현재 무기를 최신화
             CCI = other.transform;
             //other.gameObject.transform.DOScale(firstScale, 0.1f);     //스케일 값 초기화

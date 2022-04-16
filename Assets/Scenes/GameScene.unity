@@ -10412,7 +10412,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &477126833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10425,7 +10425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe6d4cc0e49d22349b43759df1d48c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: OVRPlayerController 3 original
+  playerPrefab: OVRPlayerController 5
   spawnPoint: {fileID: 1663299552}
   myNum: 0
   PlayerPV: {fileID: 477126835}
@@ -17560,6 +17560,10 @@ PrefabInstance:
     - target: {fileID: 3031088190183509297, guid: 6360b87a61dc9b246a086d4e9ce89753, type: 3}
       propertyPath: m_Name
       value: CutyCube
+      objectReference: {fileID: 0}
+    - target: {fileID: 3031088190183509297, guid: 6360b87a61dc9b246a086d4e9ce89753, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3031088190183509298, guid: 6360b87a61dc9b246a086d4e9ce89753, type: 3}
       propertyPath: m_IsTrigger
@@ -26755,6 +26759,18 @@ PrefabInstance:
       propertyPath: audioSource
       value: 
       objectReference: {fileID: 6068504352805424526}
+    - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+      propertyPath: audio.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+      propertyPath: audio.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: e10b9f2f05978074bbcff82aa075c8ed, type: 3}
+    - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+      propertyPath: audio.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: 8674dca41bf161343b44ffc224fef09a, type: 3}
     - target: {fileID: 7747707641783006989, guid: 36e119fe082e124448816a38b8bda006, type: 3}
       propertyPath: m_RootOrder
       value: 13
@@ -27726,7 +27742,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8172296972995143156
 Transform:
   m_ObjectHideFlags: 0
@@ -27862,7 +27878,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &8345839130238638445
 MonoBehaviour:
   m_ObjectHideFlags: 0

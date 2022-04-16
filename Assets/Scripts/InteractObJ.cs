@@ -51,13 +51,13 @@ public class InteractObJ : MonoBehaviourPunCallbacks
         // ChangePositionCode();
         if (PositionMechine == true)
         {
-            PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
-            //ChangePositionLocal();
+            //PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
+            ChangePositionLocal();
         }
         else if (RotationMechine==true)
         {
-            PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
-            //ChangeRotationLocal();
+            //PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
+            ChangeRotationLocal();
         }
         
     }

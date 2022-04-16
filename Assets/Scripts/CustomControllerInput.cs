@@ -36,26 +36,22 @@ public class CustomControllerInput : MonoBehaviourPunCallbacks
         }
         else
         {
-            
-            RightHandGrab();
-            
-            //RighthandDisapearHandmesh();
-            //LefthandDisapearHandmesh();
-            
+            ControllerCheck();
+
+            RighthandDisapearHandmesh();
+            LefthandDisapearHandmesh();
+
             WeaponCheck();
 
             //PV.RPC("RightHandGrab", RpcTarget.AllBuffered);
             //PV.RPC("WeaponCheck", RpcTarget.AllBuffered);
             //PV.RPC("RighthandDisapearHandmesh", RpcTarget.AllBuffered);
             //PV.RPC("LefthandDisapearHandmesh", RpcTarget.AllBuffered);
-            
         }
-
-        
     }
 
 
-    void RightHandGrab()
+    void ControllerCheck()
     {
         if (OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger))
         {
@@ -123,11 +119,11 @@ public class CustomControllerInput : MonoBehaviourPunCallbacks
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
         {
-            PV.RPC("RPCrdh1", RpcTarget.AllBuffered);
+            rightHandMesh.gameObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
         }
         else if (OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))
         {
-            PV.RPC("RPCrdh2", RpcTarget.AllBuffered);
+            rightHandMesh.gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
         }
 
     }
@@ -146,11 +142,11 @@ public class CustomControllerInput : MonoBehaviourPunCallbacks
     {
         if (OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))
         {
-            PV.RPC("RPCldh1", RpcTarget.AllBuffered);
+            leftHandMesh.gameObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
         }
         else if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger))
         {
-            PV.RPC("RPCldh2", RpcTarget.AllBuffered);
+            leftHandMesh.gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
         }
 
     }

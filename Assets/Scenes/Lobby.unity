@@ -257,7 +257,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 8172296973359322762}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e971749bb22f91040ba2c1c1b0beb20a, type: 3}
   m_Name: 
@@ -525,9 +525,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1489515230}
     - target: {fileID: 8172296972286292044, guid: 7bb5cd25606b2514cba0e85e37a3adad, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172296972286292044, guid: 7bb5cd25606b2514cba0e85e37a3adad, type: 3}
       propertyPath: StatusText
       value: 
       objectReference: {fileID: 203823615}
+    - target: {fileID: 8172296972286292044, guid: 7bb5cd25606b2514cba0e85e37a3adad, type: 3}
+      propertyPath: playerPrefab
+      value: OVRPlayerController 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8172296972286292044, guid: 7bb5cd25606b2514cba0e85e37a3adad, type: 3}
       propertyPath: NickNameInput
       value: 
@@ -536,6 +544,10 @@ PrefabInstance:
       propertyPath: roomNameInput
       value: 
       objectReference: {fileID: 1429705518}
+    - target: {fileID: 8172296972286292046, guid: 7bb5cd25606b2514cba0e85e37a3adad, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8172296972286292047, guid: 7bb5cd25606b2514cba0e85e37a3adad, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -604,6 +616,10 @@ PrefabInstance:
     - target: {fileID: 8345839131668975179, guid: da68c97cd925b654fbb215f233262bbc, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8345839131668975179, guid: da68c97cd925b654fbb215f233262bbc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8345839131668975223, guid: da68c97cd925b654fbb215f233262bbc, type: 3}
       propertyPath: m_Pivot.x

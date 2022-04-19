@@ -81,11 +81,11 @@ public class CustomControllerInput : MonoBehaviourPunCallbacks
     }
 
     
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         triggerWeapon = other.gameObject.transform;
-        //WM=other.gameObject.GetComponent<WeaponManagerVR>();
-        WM = other.transform;
+        WM = other.gameObject.transform;
+        //WM = other.gameObject.GetComponent<WeaponManagerVR>();
         //WM.PickEquipment(other);
 
         if (other.transform.gameObject.GetComponent<InteractObJ>() != null)     // 사물과의 상호작용 
@@ -106,8 +106,9 @@ public class CustomControllerInput : MonoBehaviourPunCallbacks
             if (Input.GetMouseButtonDown(0) || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))        //플레이어 입장에서 발사
             {
                 print("발사!!");
-                WM.GetComponent<WeaponManagerVR>().Shoot();     //총발사
-                
+                //WM.GetComponent<WeaponManagerVR>().Shoot();     //총발사
+                //triggerWeapon.GetComponent<WeaponManagerVR>().Shoot();     //총발사
+                currentWeapon.GetComponent<WeaponManagerVR>().Shoot();     //총발사
             }
             
             else if(OVRInput.GetUp(OVRInput.Button.SecondaryHandTrigger))

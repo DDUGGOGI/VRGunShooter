@@ -85,7 +85,7 @@ public class MagazineTop : MonoBehaviour
         magazineParent.GetComponent<Rigidbody>().isKinematic = false;   //탄창의 트리거와 물리 작용 허용
         magazineParent.GetComponent<BoxCollider>().isTrigger = false;
 
-        WMVR = null;
+        //WMVR = null;
         
 
     }

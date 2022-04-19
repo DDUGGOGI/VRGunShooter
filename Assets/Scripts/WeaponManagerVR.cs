@@ -22,6 +22,7 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
 
     [Header("RAY")]
     public RaycastHit hit;
+    public RaycastHit RPChit;
 
     [Header("Controller Check")]
     public bool isRightHandGrab = false;
@@ -93,12 +94,27 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
 
         GetAnotherButton();
         //PV.RPC("GetAnotherButton", RpcTarget.AllBuffered);
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+>>>>>>> parent of 123c2fc (LightUp)
+=======
+>>>>>>> parent of 123c2fc (LightUp)
     }
 
 
     private void OnTriggerStay(Collider other)
     {
+<<<<<<< HEAD
+<<<<<<< HEAD
+        otherCollider = other;
+=======
         
+>>>>>>> parent of 123c2fc (LightUp)
+=======
+        
+>>>>>>> parent of 123c2fc (LightUp)
         PickEquipment(other);
         //PV.RPC("PickEquipment", RpcTarget.AllBuffered);
 
@@ -110,6 +126,13 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
             //PV.RPC("touchFloor", RpcTarget.AllBuffered);
         }
     }
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+>>>>>>> parent of 123c2fc (LightUp)
+=======
+>>>>>>> parent of 123c2fc (LightUp)
 
 
     void InputCheck()
@@ -141,7 +164,7 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
     public void PickEquipment(Collider other)
     {
         
-        if (other.name == "GrabVolumeBigRight" && OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))   // 1. 오른손 그립 아이템 집기
+        if (other.name == "GrabVolumeBigRight" && OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger))   // 1. 오른손 그립 아이템 집기
         {
             PV.RequestOwnership();
             print("오너쉽 확인");
@@ -195,7 +218,7 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
             }
             
         }
-        else if (other.name == "GrabVolumeBigLeft" && OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))   // 3. 왼손 그립 아이템 집기
+        else if (other.name == "GrabVolumeBigLeft" && OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger))   // 3. 왼손 그립 아이템 집기
         {
             
             gameObject.GetComponent<BoxCollider>().isTrigger = true;
@@ -332,7 +355,7 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
                 }
                 else if (isFeedmode == true)
                 {
-                    //audioSource.PlayOneShot(audio[2]);
+                    audioSource.PlayOneShot(audio[2]);
                 }
 
                 return;
@@ -352,9 +375,9 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
             audioSource.PlayOneShot(audio[0]);                          // 발사 사운드
 
             RayCreate();        // 레이발사
-
+            //PV.RPC("RPChitRefresh", RpcTarget.AllBuffered);
             //MuzzleFlash();      //머즐 섬광
-            PV.RPC("MuzzleFlash", RpcTarget.AllBuffered);
+            //PV.RPC("MuzzleFlash", RpcTarget.AllBuffered);
 
             
 
@@ -417,12 +440,17 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
     [PunRPC]
     public void MuzzleFlash()       //총구 섬광 함수!
     {
+        hit = RPChit;
         particleSystem.Play();
 
         for (int i = 0; i < shotTargetParticleSystem.Length; i++)       // 피격 섬광
         {
             shotTargetParticleSystem[i].transform.position = hit.point;
             shotTargetParticleSystem[i].transform.forward = hit.normal;
+            shotTargetParticleSystem[i].Play();
+
+            shotTargetParticleSystem[i].transform.position = RPChit.point;
+            shotTargetParticleSystem[i].transform.forward = RPChit.normal;
             shotTargetParticleSystem[i].Play();
         }
     }
@@ -435,11 +463,21 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
         if (Physics.Raycast(ray.origin, ray.direction, out hit, 100))
         {
             print(hit.transform.gameObject.name + "이 총알에 맞았습니다.");
+            
+            PV.RPC("MuzzleFlash", RpcTarget.AllBuffered);
         }
         else if (hit.transform == null)
         {
             print("총알에 맞은 사물이 멀거나 없습니다... ");
         }
+    }
+
+    [PunRPC]
+    void RPChitRefresh()
+    {
+        print("RPChit 최싱화 합수 진입");
+        hit = RPChit;
+        print("RPChit 최싱화 완료");
     }
 
     [PunRPC]

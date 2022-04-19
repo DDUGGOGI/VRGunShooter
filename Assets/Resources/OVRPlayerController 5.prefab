@@ -7110,6 +7110,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 14f80aa553223cb429486d685ee1ca67, type: 2}
     - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+<<<<<<< HEAD
       propertyPath: audioSource
       value: 
 <<<<<<< HEAD
@@ -7118,16 +7119,14 @@ PrefabInstance:
       objectReference: {fileID: 3416218528811062051}
 >>>>>>> bf034f5fcc4f86e555caac3297106892aea8c128
     - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+=======
+>>>>>>> parent of 18662fb (Home apk build)
       propertyPath: defaultParent
       value: 
       objectReference: {fileID: 6038650529645138856}
     - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
       propertyPath: isUnlinitItem
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
-      propertyPath: audio.Array.size
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
       propertyPath: defaultPosition.y
@@ -7145,14 +7144,6 @@ PrefabInstance:
       propertyPath: defaultRotation.z
       value: -90
       objectReference: {fileID: 0}
-    - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
-      propertyPath: audio.Array.data[3]
-      value: 
-      objectReference: {fileID: 8300000, guid: e10b9f2f05978074bbcff82aa075c8ed, type: 3}
-    - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
-      propertyPath: audio.Array.data[4]
-      value: 
-      objectReference: {fileID: 8300000, guid: 8674dca41bf161343b44ffc224fef09a, type: 3}
     - target: {fileID: 6974349686556299828, guid: 36e119fe082e124448816a38b8bda006, type: 3}
       propertyPath: meshParent.Array.size
       value: 2
@@ -7228,9 +7219,9 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1492323894437278020, guid: 36e119fe082e124448816a38b8bda006, type: 3}
   m_PrefabInstance: {fileID: 6038650530025468793}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &7455034832608174156 stripped
+--- !u!4 &4055768148940047476 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 3798788515800699701, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7747707641783006989, guid: 36e119fe082e124448816a38b8bda006, type: 3}
   m_PrefabInstance: {fileID: 6038650530025468793}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &2617485624405090639 stripped
@@ -7238,11 +7229,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8619526741041287734, guid: 36e119fe082e124448816a38b8bda006, type: 3}
   m_PrefabInstance: {fileID: 6038650530025468793}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &4055768148940047476 stripped
+--- !u!4 &7455034832608174156 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7747707641783006989, guid: 36e119fe082e124448816a38b8bda006, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3798788515800699701, guid: 36e119fe082e124448816a38b8bda006, type: 3}
   m_PrefabInstance: {fileID: 6038650530025468793}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
 <<<<<<< HEAD
 --- !u!82 &5082596650072554482
 =======
@@ -7343,6 +7335,8 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+=======
+>>>>>>> parent of 18662fb (Home apk build)
 --- !u!114 &5772778727397491488
 MonoBehaviour:
   m_ObjectHideFlags: 0

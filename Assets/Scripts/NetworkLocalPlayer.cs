@@ -53,7 +53,7 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
     {
         if (!PV.IsMine)
         {
-            //ovrCamRig.SetActive(false);
+            ovrCamRig.SetActive(false);
             Destroy(ovrCamRig);
         }
         else

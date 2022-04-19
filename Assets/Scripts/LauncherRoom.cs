@@ -17,9 +17,16 @@ public class LauncherRoom : MonoBehaviourPunCallbacks
     private bool connect = false;
 
     public string playerPrefab;
-    public Transform spawnPoint;
+    public Transform[] spawnPoint;
 
     public GameObject cam;
+
+    public int i;
+
+    private void Start()
+    {
+        
+    }
 
     //현재 상태 표시 
     private void Update() => StatusText.text = PhotonNetwork.NetworkClientState.ToString();
@@ -62,8 +69,9 @@ public class LauncherRoom : MonoBehaviourPunCallbacks
     //방에 입장 했을 때 호출 
     public override void OnJoinedRoom()
     {
+        i = Random.Range(0, 2);
         cam.SetActive(false);
-        PhotonNetwork.Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity);
+        PhotonNetwork.Instantiate(playerPrefab, spawnPoint[i].position, spawnPoint[i].rotation);
         
     }
 }

@@ -95,6 +95,12 @@ public class CustomControllerInput : MonoBehaviourPunCallbacks
         }
     }
 
+    void RPConconnect(Collider other)
+    {
+        print("사물의 인터렉 클래스 작동!");
+        other.transform.gameObject.GetComponent<InteractObJ>().OnConnect();
+    }
+
     
 
     

@@ -9,9 +9,9 @@ public class InteractObJ : MonoBehaviourPunCallbacks
     public PhotonView PV;
 
     [Header("Control")]
-    public bool isOpen = false;
-    public bool isConnect = false;
-    public bool isDisplay = true;
+    public bool isOpen ;
+    public bool isConnect ;
+    public bool isDisplay ;
 
     [Header("Smooth Time")]
     public float smoothTime;
@@ -42,7 +42,6 @@ public class InteractObJ : MonoBehaviourPunCallbacks
     void Start()
     {
         //ani = GetComponent<Animation>();
-        transform.DOLocalRotate(startRotation, smoothTime).SetEase(ease);
     }
 
 
@@ -51,14 +50,19 @@ public class InteractObJ : MonoBehaviourPunCallbacks
         // ChangePositionCode();
         if (PositionMechine == true)
         {
-            PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
-            //ChangePositionLocal();
+            //PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
+            ChangePositionLocal();
         }
         else if (RotationMechine==true)
         {
-            PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
-            //ChangeRotationLocal();
+            //PV.RPC("ChangePositionLocal", RpcTarget.AllBuffered);
+            ChangeRotationLocal();
         }
+        else
+        {
+            return;
+        }
+        
         
     }
 
@@ -113,7 +117,7 @@ public class InteractObJ : MonoBehaviourPunCallbacks
         isConnect = false;
     }
 
-    [PunRPC]
+
     public void ChangePositionLocal()
     {
         if (isOpen == false && isConnect == true)
@@ -135,13 +139,13 @@ public class InteractObJ : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
+
+
     public void ChangeRotationLocal()
     {
         if (isOpen == false && isConnect == true)
         {
             print("¹® ¿­¸²");
-            Vector3 vel = Vector3.zero;
             transform.DOLocalRotate(targetRotation, smoothTime).SetEase(ease);
 
             Invoke("offConnect", 1.1f);
@@ -150,7 +154,6 @@ public class InteractObJ : MonoBehaviourPunCallbacks
         }
         else if (isOpen == true && isConnect == true)
         {
-            Vector3 vel = Vector3.zero;
             print("¹® ´ÝÈû");
             transform.DOLocalRotate(defaultRotation, smoothTime).SetEase(ease);
 

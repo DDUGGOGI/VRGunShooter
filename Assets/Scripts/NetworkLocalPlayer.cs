@@ -34,6 +34,8 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
 
     public Animator anim;
 
+    
+
     void Start()
     {
         anim = GetComponentInChildren<Animator>();
@@ -45,6 +47,7 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
             ovrCamRig.SetActive(true);
             cam.GetComponent<Camera>().enabled = true;
             ovr.GetComponent<OVRCameraRig>().enabled = true;
+            
         }
 
     }
@@ -140,4 +143,7 @@ public class NetworkLocalPlayer : MonoBehaviourPunCallbacks
         //이동한다.
         cc.Move(dir * speed * Time.deltaTime);
     }
+
+    
 }
+

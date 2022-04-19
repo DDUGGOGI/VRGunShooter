@@ -31,6 +31,7 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
 
     [Header("Gun Shot")]
     public Transform Gun;
+    public int gunDamage;
     public Transform weaponParent;
     public Transform muzzle;
     public Transform rayOrigin;
@@ -452,6 +453,11 @@ public class WeaponManagerVR : MonoBehaviourPunCallbacks
         if (hit.transform.gameObject.name == "SphereTarget")
         {
             hit.transform.gameObject.GetComponent<HItBall>().Hitball();
+        }
+
+        if (hit.transform.gameObject.tag == "Player")
+        {
+            hit.transform.gameObject.GetComponent<PlayerHPmanager>().PlayerHPdown(gunDamage);
         }
     }
 

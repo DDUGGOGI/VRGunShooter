@@ -102,9 +102,6 @@ public class CustomControllerInput : MonoBehaviourPunCallbacks
     }
 
     
-
-    
-    
     void WeaponCheck()
     {
         if (triggerWeapon==currentWeapon)
